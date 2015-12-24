@@ -2,7 +2,7 @@
   "name": "convexpress",
   "version": "1.0.0",
   "description": "Employ conventions to register express routes",
-  "main": "lib/index.js",
+  "main": "lib/convexpress.js",
   "scripts": {
     "build": "babel src --out-dir lib",
     "clean": "rimraf lib coverage",

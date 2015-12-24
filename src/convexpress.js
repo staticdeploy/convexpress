@@ -4,32 +4,28 @@ import {Router} from "express";
 import * as validate from "./validate-middleware";
 import * as convert from "./convert";
 
-export default class Convexpress {
-
-    constructor (info) {
-        this.router = Router()
-            .use(json())
-            .get("/swagger.json", (req, res) => {
-                res.status(200).send(this.swagger);
-            });
-        this.swagger = {
-            swagger: "2.0",
-            info: info,
-            paths: {}
-        };
-    }
-
-    use (route) {
+export default function convexpress (options) {
+    const router = Router().use(json());
+    router.swagger = {
+        swagger: "2.0",
+        host: options.host,
+        basePath: options.basePath || "/",
+        info: options.info,
+        consumes: ["application/json"],
+        produces: ["application/json"],
+        paths: {}
+    };
+    router.convroute = function (route) {
         // Attach route to router
-        this.router[route.method](
+        router[route.method](
             route.path,
             [validate.middleware(route.parameters)].concat(route.middleware || []),
             route.handler
         );
         // Update the swagger document
         const swaggerPath = convert.path(route.path);
-        this.swagger.paths[swaggerPath] = {
-            ...this.swagger.paths[swaggerPath],
+        router.swagger.paths[swaggerPath] = {
+            ...router.swagger.paths[swaggerPath],
             [route.method]: {
                 description: route.description,
                 parameters: convert.parameters(route.parameters),
@@ -40,7 +36,7 @@ export default class Convexpress {
             }
         };
         // Allow method chaining
-        return this;
-    }
-
+        return router;
+    };
+    return router;
 }

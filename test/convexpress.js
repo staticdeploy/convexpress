@@ -3,20 +3,11 @@ import {all, always, contains, is} from "ramda";
 import sinon from "sinon";
 import sinonChai from "sinon-chai";
 
-import Convexpress from "../src/convexpress";
+import convexpress from "../src/convexpress";
 
 chai.use(sinonChai);
 
-describe("Convexpress instances", () => {
-
-    it("instances have a router property", () => {
-        const convexpress = new Convexpress({});
-        expect(convexpress).to.have.property("router");
-    });
-
-});
-
-describe("Registering routes", () => {
+describe("convexpress router", () => {
 
     const router = {
         get: sinon.spy(() => router),
@@ -27,10 +18,10 @@ describe("Registering routes", () => {
     const Router = always(router);
 
     before(() => {
-        Convexpress.__Rewire__("Router", Router);
+        convexpress.__Rewire__("Router", Router);
     });
     after(() => {
-        Convexpress.__ResetDependency__("Router");
+        convexpress.__ResetDependency__("Router");
     });
     beforeEach(() => {
         router.get.reset();
@@ -39,18 +30,22 @@ describe("Registering routes", () => {
         router.use.reset();
     });
 
-    it("registers them to the express router", () => {
-        const convexpress = new Convexpress({});
+    it("is an express router", () => {
+        const app = convexpress({});
+        expect(app).to.equal(router);
+    });
+
+    it("register routes on the express router", () => {
         const mw = sinon.spy();
         const handler = sinon.spy();
-        convexpress
-            .use({
+        convexpress({})
+            .convroute({
                 path: "/path/one",
                 method: "post",
                 middleware: [mw],
                 handler: handler
             })
-            .use({
+            .convroute({
                 path: "/path/two",
                 method: "post",
                 handler: handler
@@ -71,10 +66,16 @@ describe("Registering routes", () => {
     });
 
     it("adds them to the swagger definition", () => {
-        const convexpress = new Convexpress({});
         const handler = sinon.spy();
-        convexpress
-            .use({
+        const options = {
+            info: {
+                title: "api",
+                version: "1.0.0"
+            },
+            host: "example.com"
+        };
+        const app = convexpress(options)
+            .convroute({
                 path: "/path/:one",
                 method: "post",
                 handler: handler,
@@ -89,7 +90,7 @@ describe("Registering routes", () => {
                     "200": {description: "ok"}
                 }
             })
-            .use({
+            .convroute({
                 path: "/path/:two",
                 method: "put",
                 handler: handler,
@@ -99,9 +100,16 @@ describe("Registering routes", () => {
                     "200": {description: "ok"}
                 }
             });
-        expect(convexpress.swagger).to.deep.equal({
+        expect(app.swagger).to.deep.equal({
             swagger: "2.0",
-            info: {},
+            info: {
+                title: "api",
+                version: "1.0.0"
+            },
+            host: "example.com",
+            basePath: "/",
+            consumes: ["application/json"],
+            produces: ["application/json"],
             paths: {
                 "/path/{one}": {
                     post: {

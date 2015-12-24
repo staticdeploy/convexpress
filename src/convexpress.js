@@ -40,6 +40,7 @@ export default function convexpress (options) {
     };
     router.serveSwagger = function (path = "/swagger.json") {
         router.get(path, (req, res) => res.status(200).send(router.swagger));
+        return router;
     };
     return router;
 }

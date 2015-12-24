@@ -38,5 +38,8 @@ export default function convexpress (options) {
         // Allow method chaining
         return router;
     };
+    router.serveSwagger = function (path = "/swagger.json") {
+        router.get(path, (req, res) => res.status(200).send(router.swagger));
+    };
     return router;
 }

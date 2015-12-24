@@ -1,8 +1,9 @@
 import {json} from "body-parser";
 import {Router} from "express";
 
-import * as validate from "./validate-middleware";
 import * as convert from "./convert";
+import * as validate from "./validate-middleware";
+import wrap from "./wrap";
 
 export default function convexpress (options) {
     const router = Router().use(json());
@@ -20,7 +21,7 @@ export default function convexpress (options) {
         router[route.method](
             route.path,
             [validate.middleware(route.parameters)].concat(route.middleware || []),
-            route.handler
+            wrap(route.handler)
         );
         // Update the swagger document
         const swaggerPath = convert.path(route.path);

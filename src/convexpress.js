@@ -1,9 +1,10 @@
+import "babel-polyfill";
 import {json} from "body-parser";
 import {Router} from "express";
 
 import * as convert from "./convert";
 import * as validate from "./validate-middleware";
-import wrap from "./wrap";
+import * as wrap from "./wrap";
 
 export default function convexpress (options) {
     const router = Router().use(json());
@@ -18,10 +19,14 @@ export default function convexpress (options) {
     };
     router.convroute = function (route) {
         // Attach route to router
+        const middleware = [
+            validate.middleware(route.parameters),
+            ...(route.middleware || [])
+        ];
         router[route.method](
             route.path,
-            [validate.middleware(route.parameters)].concat(route.middleware || []),
-            wrap(route.handler)
+            middleware.map(wrap.middleware),
+            wrap.handler(route.handler)
         );
         // Update the swagger document
         const swaggerPath = convert.path(route.path);

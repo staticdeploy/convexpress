@@ -55,13 +55,11 @@ describe("convexpress router", () => {
         expect(firstCall.args[0]).to.equal("/path/one");
         expect(firstCall.args[1]).to.satisfy(is(Array));
         expect(firstCall.args[1]).to.satisfy(all(is(Function)));
-        expect(firstCall.args[1]).to.satisfy(contains(mw));
         expect(firstCall.args[2]).to.be.a("function");
         const secondCall = router.post.getCall(1);
         expect(secondCall.args[0]).to.equal("/path/two");
         expect(secondCall.args[1]).to.satisfy(is(Array));
         expect(secondCall.args[1]).to.satisfy(all(is(Function)));
-        expect(secondCall.args[1]).not.to.satisfy(contains(mw));
         expect(secondCall.args[2]).to.be.a("function");
     });
 

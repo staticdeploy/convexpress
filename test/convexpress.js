@@ -1,5 +1,5 @@
 import chai, {expect} from "chai";
-import {all, always, contains, is} from "ramda";
+import {all, always, is} from "ramda";
 import sinon from "sinon";
 import sinonChai from "sinon-chai";
 

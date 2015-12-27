@@ -1,120 +1,160 @@
-import chai, {expect} from "chai";
-import sinon from "sinon";
-import sinonChai from "sinon-chai";
+import {json} from "body-parser";
+import express from "express";
+import request from "supertest-as-promised";
 
 import {middleware} from "../src/validate-middleware";
 
-chai.use(sinonChai);
-
 describe("validate.middleware", () => {
 
-    const params = [
-        {
-            name: "param1",
-            in: "body",
-            schema: {
-                type: "object",
-                properties: {
-                    key: {
-                        type: "string"
+    describe("optional parameters", () => {
+
+        const params = [
+            {
+                name: "bodyParam",
+                in: "body",
+                schema: {
+                    type: "object",
+                    properties: {
+                        key: {
+                            type: "string"
+                        }
                     }
                 }
+            },
+            {
+                name: "pathParam",
+                in: "path"
+            },
+            {
+                name: "queryParam",
+                in: "query"
+            },
+            {
+                name: "headerParam",
+                in: "header"
             }
-        },
-        {
-            name: "param2",
-            in: "path"
-        },
-        {
-            name: "param3",
-            in: "query"
-        },
-        {
-            name: "param4",
-            in: "header"
-        }
-    ];
-    const validReq = {
-        body: {key: "value"},
-        params: {param2: "value"},
-        query: {param3: "value"},
-        headers: {param4: "value"}
-    };
-    const invalidReq1 = {
-        body: {key: 1},
-        params: {param2: "value"},
-        query: {param3: "value"},
-        headers: {param4: "value"}
-    };
-    const invalidReq2 = {
-        body: {key: "value"},
-        params: {param2: 2},
-        query: {param3: "value"},
-        headers: {param4: "value"}
-    };
-    const invalidReq3 = {
-        body: {key: "value"},
-        params: {param2: "value"},
-        query: {param3: 3},
-        headers: {param4: "value"}
-    };
-    const invalidReq4 = {
-        body: {key: "value"},
-        params: {param2: "value"},
-        query: {param3: "value"},
-        headers: {param4: 4}
-    };
-    const res = {
-        status: sinon.spy(() => res),
-        send: sinon.spy()
-    };
-    const next = sinon.spy();
+        ];
+        const server = express()
+            .use(json())
+            .use("/:pathParam", middleware(params))
+            .get("/:pathParam", (req, res) => res.status(200).send("OK"));
 
-    beforeEach(() => {
-        res.status.reset();
-        res.send.reset();
-        next.reset();
+        it("not 400 on valid request [CASE: no missing parameters]", () => {
+            return request(server)
+                .get("/pathParamValue?queryParam=queryParamValue")
+                .set("headerParam", "headerParamValue")
+                .send({key: "value"})
+                .expect(200)
+                .expect("OK");
+        });
+
+        it("not 400 on valid request [CASE: missing parameters]", () => {
+            return request(server)
+                .get("/pathParamValue")
+                .expect(200)
+                .expect("OK");
+        });
+
+        it("400 on invalid request [CASE: invalid body]", () => {
+            return request(server)
+                .get("/pathParamValue?queryParam=queryParamValue")
+                .set("headerParam", "headerParamValue")
+                .send({key: 1})
+                .expect(400)
+                .expect(/Validation failed for parameter bodyParam in body/);
+        });
+
     });
 
-    const mw = middleware(params);
+    describe("required parameters", () => {
 
-    it("next on valid request", () => {
-        mw(validReq, res, next);
-        expect(next).to.have.callCount(1);
-        expect(res.status).to.have.callCount(0);
-        expect(res.send).to.have.callCount(0);
-    });
+        const params = [
+            {
+                name: "bodyParam",
+                in: "body",
+                schema: {
+                    type: "object",
+                    properties: {
+                        key: {
+                            type: "string"
+                        }
+                    }
+                },
+                required: true
+            },
+            {
+                name: "pathParam",
+                in: "path",
+                required: true
+            },
+            {
+                name: "queryParam",
+                in: "query",
+                required: true
+            },
+            {
+                name: "headerParam",
+                in: "header",
+                required: true
+            }
+        ];
+        const server = express()
+            .use(json())
+            .use("/:pathParam", middleware(params))
+            .get("/:pathParam", (req, res) => res.status(200).send("OK"));
 
-    it("400 on invalid request [CASE: invalid body]", () => {
-        mw(invalidReq1, res, next);
-        expect(next).to.have.callCount(0);
-        expect(res.status).to.have.callCount(1);
-        expect(res.status).to.have.been.calledWith(400);
-        expect(res.send).to.have.callCount(1);
-    });
+        it("not 400 on valid request", () => {
+            return request(server)
+                .get("/pathParamValue?queryParam=queryParamValue")
+                .set("headerParam", "headerParamValue")
+                .send({key: "value"})
+                .expect(200)
+                .expect("OK");
+        });
 
-    it("400 on invalid request [CASE: invalid path]", () => {
-        mw(invalidReq2, res, next);
-        expect(next).to.have.callCount(0);
-        expect(res.status).to.have.callCount(1);
-        expect(res.status).to.have.been.calledWith(400);
-        expect(res.send).to.have.callCount(1);
-    });
+        it("400 on invalid request [CASE: missing body]", () => {
+            return request(server)
+                .get("/pathParamValue?queryParam=queryParamValue")
+                .set("headerParam", "headerParamValue")
+                .expect(400)
+                .expect(/Missing required parameter bodyParam in body/);
+        });
 
-    it("400 on invalid request [CASE: invalid query]", () => {
-        mw(invalidReq3, res, next);
-        expect(next).to.have.callCount(0);
-        expect(res.status).to.have.callCount(1);
-        expect(res.status).to.have.been.calledWith(400);
-        expect(res.send).to.have.callCount(1);
-    });
+        it("400 on invalid request [CASE: invalid body]", () => {
+            return request(server)
+                .get("/pathParamValue?queryParam=queryParamValue")
+                .set("headerParam", "headerParamValue")
+                .send({key: 1})
+                .expect(400)
+                .expect(/Validation failed for parameter bodyParam in body/);
+        });
 
-    it("400 on invalid request [CASE: invalid headers]", () => {
-        mw(invalidReq4, res, next);
-        expect(next).to.have.callCount(0);
-        expect(res.status).to.have.callCount(1);
-        expect(res.status).to.have.been.calledWith(400);
-        expect(res.send).to.have.callCount(1);
+        it("400 on invalid request [CASE: missing query param]", () => {
+            return request(server)
+                .get("/pathParamValue?wrongQueryParam=queryParamValue")
+                .set("headerParam", "headerParamValue")
+                .send({key: "value"})
+                .expect(400)
+                .expect(/Missing required parameter queryParam in query/);
+        });
+
+        it("400 on invalid request [CASE: missing header param]", () => {
+            return request(server)
+                .get("/pathParamValue?queryParam=queryParamValue")
+                .send({key: "value"})
+                .expect(400)
+                .expect(/Missing required parameter headerParam in header/);
+        });
+
+        it("400 on invalid request [CASE: multiple errors]", () => {
+            return request(server)
+                .get("/pathParamValue")
+                .send({key: "value"})
+                .expect(400)
+                .expect(/Missing required parameter headerParam in header/)
+                .expect(/Missing required parameter queryParam in query/);
+        });
+
     });
 
 });

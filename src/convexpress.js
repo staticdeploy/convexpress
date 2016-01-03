@@ -1,13 +1,13 @@
 import "babel-polyfill";
-import {json} from "body-parser";
 import {Router} from "express";
 
 import * as convert from "./convert";
+import parseBody from "./parse-body";
 import * as validate from "./validate-middleware";
 import * as wrap from "./wrap";
 
 export default function convexpress (options) {
-    const router = Router().use(json());
+    const router = Router().use(parseBody());
     router.swagger = {
         swagger: "2.0",
         host: options.host,

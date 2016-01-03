@@ -1,6 +1,5 @@
 import Ajv from "ajv";
 import {identity, T} from "ramda";
-import {hasBody} from "type-is";
 
 const ajv = Ajv({allErrors: true});
 
@@ -10,7 +9,7 @@ function validateRequest (params, req) {
             // Extract the target to validate
             var target;
             if (param.in === "body") {
-                target = (hasBody(req) ? req.body : undefined);
+                target = req.body;
             } if (param.in === "path") {
                 target = req.params[param.name];
             } if (param.in === "query") {

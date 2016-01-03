@@ -15,10 +15,20 @@ export function parameters (parameters = []) {
     *   json-schema, but swagger doesn't fully support json-schemas. To avoid
     *   issues we just replace the value with an empty object and copy the
     *   JSON schema under the "x-schema" property.
+    *
+    *   If there's no schema property, then the parameter must be either in
+    *   path, query, or headers. Therefore it'll certainly be a string, and we
+    *   specify it to avoid validation errors for the swagger file that could
+    *   occur if the user forgets to set the type property.
     */
-    return parameters.map(param => param.schema ? {
-        ...param,
-        schema: {},
-        "x-schema": param.schema
-    } : param);
+    return parameters.map(param => (
+        param.schema ? {
+            ...param,
+            schema: {},
+            "x-schema": param.schema
+        } : {
+            ...param,
+            type: "string"
+        }
+    ));
 }

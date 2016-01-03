@@ -131,7 +131,7 @@ describe("convexpress router", () => {
                     put: {
                         description: "path two",
                         tags: [],
-                        parameters: [{name: "param"}],
+                        parameters: [{name: "param", type: "string"}],
                         responses: {
                             "200": {description: "ok"},
                             "400": {description: "Validation failed"}

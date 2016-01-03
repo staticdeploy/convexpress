@@ -77,6 +77,7 @@ describe("convexpress router", () => {
                 path: "/path/:one",
                 method: "post",
                 handler: handler,
+                tags: ["tag"],
                 description: "path one",
                 parameters: [{
                     name: "param",
@@ -112,9 +113,13 @@ describe("convexpress router", () => {
                 "/path/{one}": {
                     post: {
                         description: "path one",
+                        tags: ["tag"],
                         parameters: [{
                             name: "param",
-                            schema: {}
+                            schema: {},
+                            "x-schema": {
+                                type: "object"
+                            }
                         }],
                         responses: {
                             "200": {description: "ok"},
@@ -125,6 +130,7 @@ describe("convexpress router", () => {
                 "/path/{two}": {
                     put: {
                         description: "path two",
+                        tags: [],
                         parameters: [{name: "param"}],
                         responses: {
                             "200": {description: "ok"},

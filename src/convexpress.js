@@ -34,6 +34,7 @@ export default function convexpress (options) {
             ...router.swagger.paths[swaggerPath],
             [route.method]: {
                 description: route.description,
+                tags: route.tags || [],
                 parameters: convert.parameters(route.parameters),
                 responses: {
                     ...route.responses,

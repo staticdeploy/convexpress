@@ -7,3 +7,14 @@
 # convexpress
 
 Employ conventions to register express routes.
+
+## `convroute` properties
+
+* `path`
+* `method`
+* `handler`
+* `paramters` (optional)
+* `middleware` (optional)
+* `description` (optional)
+* `tags` (optional)
+* `responses` (optional)

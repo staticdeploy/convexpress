@@ -35,7 +35,7 @@ describe("parameters", () => {
             {name: "paramTwo"}
         ];
         const outputParameters = [
-            {name: "paramOne", schema: {}},
+            {name: "paramOne", schema: {}, "x-schema": {key: "value"}},
             {name: "paramTwo"}
         ];
         expect(parameters(inputParameters)).to.deep.equal(outputParameters);

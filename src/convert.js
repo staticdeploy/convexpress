@@ -1,5 +1,4 @@
-import {swaggerNotSupportedKeywords} from './swaggerNotSupportedKeywords';
-import {intersection} from "ramda";
+import {swaggerNotSupportedKeywords} from "./swaggerNotSupportedKeywords";
 
 export function path (expressPath) {
     /*
@@ -31,7 +30,7 @@ export function parameters (parameters = []) {
                         param["x-schema"] = {};
                     }
                     param["x-schema"][current] = param.schema[current];
-                    delete param.schema[current]
+                    delete param.schema[current];
                 }
             });
         } else {

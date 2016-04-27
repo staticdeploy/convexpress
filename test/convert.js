@@ -44,8 +44,7 @@ describe("parameters", () => {
                 oneOf: "value",
                 not: "value"
             }
-        },
-        {
+        }, {
             name: "paramTwo"
         }];
         const outputParameters = [{
@@ -64,8 +63,7 @@ describe("parameters", () => {
                 oneOf: "value",
                 not: "value"
             }
-        },
-        {
+        }, {
             name: "paramTwo",
             type: "string"
         }];

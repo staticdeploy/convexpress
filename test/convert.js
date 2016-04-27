@@ -29,15 +29,46 @@ describe("path", () => {
 });
 
 describe("parameters", () => {
-    it("converts the json-schema parameters property to an empty object", () => {
-        const inputParameters = [
-            {name: "paramOne", schema: {key: "value"}},
-            {name: "paramTwo"}
-        ];
-        const outputParameters = [
-            {name: "paramOne", schema: {}, "x-schema": {key: "value"}},
-            {name: "paramTwo", type: "string"}
-        ];
+    it("converts only not supported json-schema parameters property to x-schema", () => {
+        const inputParameters = [{
+            name: "paramOne",
+            schema: {
+                key: "value",
+                id: "value",
+                $schema: "value",
+                additionalItems: "value",
+                definitions: "value",
+                patternProperties: "value",
+                dependencies: "value",
+                anyOf: "value",
+                oneOf: "value",
+                not: "value"
+            }
+        },
+        {
+            name: "paramTwo"
+        }];
+        const outputParameters = [{
+            name: "paramOne",
+            schema: {
+                key: "value"
+            },
+            "x-schema": {
+                id: "value",
+                $schema: "value",
+                additionalItems: "value",
+                definitions: "value",
+                patternProperties: "value",
+                dependencies: "value",
+                anyOf: "value",
+                oneOf: "value",
+                not: "value"
+            }
+        },
+        {
+            name: "paramTwo",
+            type: "string"
+        }];
         expect(parameters(inputParameters)).to.deep.equal(outputParameters);
     });
 });

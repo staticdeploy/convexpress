@@ -1,4 +1,4 @@
-import {swaggerNotSupportedKeywords} from "./swaggerNotSupportedKeywords";
+import {swaggerUnsupportedKeywords} from "./swaggerUnsupportedKeywords";
 
 export function path (expressPath) {
     /*
@@ -25,7 +25,7 @@ export function parameters (parameters = []) {
     return parameters.map(param => {
         if (param.schema) {
             Object.keys(param.schema).forEach(current => {
-                if (swaggerNotSupportedKeywords.indexOf(current) !== -1) {
+                if (swaggerUnsupportedKeywords.indexOf(current) !== -1) {
                     if (!param["x-schema"]) {
                         param["x-schema"] = {};
                     }

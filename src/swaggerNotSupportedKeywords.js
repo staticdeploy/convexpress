@@ -1,4 +1,4 @@
-export const swaggerNotSupportedKeywords = [
+export const swaggerUnsupportedKeywords = [
     "id",
     "$schema",
     "additionalItems",

@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {clone} from "ramda";
 
-import * as convert from "../src/convert";
+import convert, {parameters, path} from "../src/convert";
 
 describe("path", () => {
     it("converts from expressjs path syntax to swagger path syntax", () => {
@@ -25,7 +25,7 @@ describe("path", () => {
             "/user/{id}/role/",
             "/user/{id}/role/{role}"
         ];
-        expect(expressPaths.map(convert.path)).to.deep.equal(swaggerPaths);
+        expect(expressPaths.map(path)).to.deep.equal(swaggerPaths);
     });
 });
 
@@ -33,7 +33,7 @@ describe("parameters", () => {
 
     it("forces schema-less parameters into string parameters", () => {
         const inputParameters = [{}];
-        expect(convert.parameters(inputParameters)).to.deep.equal([{
+        expect(parameters(inputParameters)).to.deep.equal([{
             type: "string"
         }]);
     });
@@ -45,7 +45,7 @@ describe("parameters", () => {
                 type: "string"
             }
         }];
-        const outputParameters = convert.parameters(inputParameters);
+        const outputParameters = parameters(inputParameters);
         expect(outputParameters[0].schema).to.deep.equal({
             type: "string"
         });
@@ -58,7 +58,7 @@ describe("parameters", () => {
                 type: "string"
             }
         }];
-        const outputParameters = convert.parameters(inputParameters);
+        const outputParameters = parameters(inputParameters);
         const originalSchema = inputParameters[0].schema;
         const copiedSchema = outputParameters[0]["x-schema"];
         expect(copiedSchema).to.deep.equal(originalSchema);

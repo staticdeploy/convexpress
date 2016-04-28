@@ -33,7 +33,7 @@ describe("parameters", () => {
         const inputParameters = [{
             name: "paramOne",
             schema: {
-                key: "value",
+                validKey: "value",
                 id: "value",
                 $schema: "value",
                 additionalItems: "value",
@@ -42,7 +42,19 @@ describe("parameters", () => {
                 dependencies: "value",
                 anyOf: "value",
                 oneOf: "value",
-                not: "value"
+                not: "value",
+                nestedPro: {
+                    validKey: "value",
+                    additionalItems: "value"
+                },
+                anotherNestedPro: {
+                    validKey: "value",
+                    additionalItems: "value",
+                    moreNestedPro: {
+                        validKey: "value",
+                        additionalItems: "value"
+                    }
+                }
             }
         }, {
             name: "paramTwo"
@@ -50,18 +62,28 @@ describe("parameters", () => {
         const outputParameters = [{
             name: "paramOne",
             schema: {
-                key: "value"
-            },
-            "x-schema": {
-                id: "value",
-                $schema: "value",
-                additionalItems: "value",
-                definitions: "value",
-                patternProperties: "value",
-                dependencies: "value",
-                anyOf: "value",
-                oneOf: "value",
-                not: "value"
+                validKey: "value",
+                "x-id": "value",
+                "x-$schema": "value",
+                "x-additionalItems": "value",
+                "x-definitions": "value",
+                "x-patternProperties": "value",
+                "x-dependencies": "value",
+                "x-anyOf": "value",
+                "x-oneOf": "value",
+                "x-not": "value",
+                nestedPro: {
+                    validKey: "value",
+                    "x-additionalItems": "value"
+                },
+                anotherNestedPro: {
+                    validKey: "value",
+                    "x-additionalItems": "value",
+                    moreNestedPro: {
+                        validKey: "value",
+                        "x-additionalItems": "value"
+                    }
+                }
             }
         }, {
             name: "paramTwo",

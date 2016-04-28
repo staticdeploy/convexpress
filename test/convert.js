@@ -246,6 +246,25 @@ describe("convertSchema", () => {
         });
     });
 
+    it("doesn't convert object properties with unsupported keywords as key", () => {
+        const jsonSchema = {
+            type: "object",
+            properties: {
+                patternProperties: {},
+                dependencies: {}
+            },
+            patternProperties: {},
+            dependencies: {}
+        };
+        expect(convertSchema(jsonSchema)).to.deep.equal({
+            type: "object",
+            properties: {
+                patternProperties: {},
+                dependencies: {}
+            }
+        });
+    });
+
     it("doesn't mutate the input object", () => {
         const jsonSchema = {
             type: "object",

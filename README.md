@@ -18,3 +18,58 @@ Employ conventions to register express routes.
 * `description` (optional)
 * `tags` (optional)
 * `responses` (optional)
+
+## Install
+`$ npm install convexpress`
+
+## Use
+
+### Rouotes implementation
+
+```js
+import convexpress from 'convexpress';
+
+const options = {
+    info: {
+        title: 'myService',
+        version: '1.0.0'
+    },
+    host: 'localhost:3000'
+};
+const api = convexpress(options)
+    .serveSwagger() //automatically generate swagger.json
+    .convroute(require('./resourceA/get'))
+    .convroute(require('./resourceA/post'))
+
+const server = express()
+    .use(cors(corsOptions))
+    .use(bodyParser.json({limit: '6mb'}))
+    .use(bodyParser.urlencoded({limit: '6mb', extended: true}))
+    .use(api);
+```
+
+### Api implementation
+
+####get.js
+```js
+export const path = '/resourceA';
+export const method = 'get';
+export const description = 'List resourceA';
+export const tags = ['resourceA'];
+export const responses = {
+    '200': {
+        description: 'resourceA list'
+    }
+};
+export const parameters = [
+    {
+        name: 'id',
+        in: 'query',
+        required: false,
+        type: 'string'
+    }
+];
+export function handler (req, res) {
+    // request handler, return all that client needs
+}
+```

@@ -1,3 +1,6 @@
+import swaggerUnsupportedKeywords from "./swagger-unsupported-keywords";
+import {clone, is, map} from "ramda";
+
 export function path (expressPath) {
     /*
     *   Converts path parameters from the expressjs format to the swagger
@@ -8,13 +11,40 @@ export function path (expressPath) {
     return expressPath.replace(/:(\w+)/g, "{$1}");
 }
 
+function convertSchema (jsonSchema) {
+    const swaggerSchema = {...jsonSchema};
+    if (jsonSchema.type === "object") {
+        if (jsonSchema.properties) {
+            // each property is a json-schema
+            swaggerSchema.properties = map(convertSchema, jsonSchema.properties);
+        }
+        if (is(Object, jsonSchema.additionalProperties)) {
+            // if `additionalProperties` is an object, it's a json-schema
+            swaggerSchema.additionalProperties = convertSchema(jsonSchema.additionalProperties);
+        }
+    }
+    if (jsonSchema.type === "array") {
+        if (is(Array, jsonSchema.items)) {
+            // if `items` is an array, it's an array of json-schemas
+            swaggerSchema.items = map(convertSchema, jsonSchema.items);
+        } else if (is(Object, jsonSchema.items)) {
+            // if `items` is a plain object, it's a json-schema
+            swaggerSchema.items = convertSchema(jsonSchema.items);
+        }
+    }
+    swaggerUnsupportedKeywords.forEach(keyword => {
+        delete swaggerSchema[keyword];
+    });
+    return swaggerSchema;
+}
+
 export function parameters (parameters = []) {
     /*
-    *   If the parameter has a schema property, replace it with an empty object.
-    *   In the route definition the schema property can contain any valid
-    *   json-schema, but swagger doesn't fully support json-schemas. To avoid
-    *   issues we just replace the value with an empty object and copy the
-    *   JSON schema under the "x-schema" property.
+    *   If there a schema property in the parameter definition, that property
+    *   can contain any valid json-schema. swagger however doesn't fully support
+    *   json-schemas. Thus, to avoid generating an invalid swagger definition,
+    *   we convert the json-schema to a swagger schema by recursively deleting
+    *   unsupported properties.
     *
     *   If there's no schema property, then the parameter must be either in
     *   path, query, or headers. Therefore it'll certainly be a string, and we
@@ -24,7 +54,14 @@ export function parameters (parameters = []) {
     return parameters.map(param => (
         param.schema ? {
             ...param,
-            schema: {},
+            // Clone the schema to avoid accidental mutations that may occur
+            // inside convertSchema. In fact, even though convertSchema should
+            // not mutate its input, accidental mutations could result in
+            // incorrect validation (since it's the same schema object used by
+            // the validation function). So better be safe than sorry.
+            schema: convertSchema(clone(param.schema)),
+            // Keep the full schema around, which could be useful for some
+            // consumers of the swagger definition
             "x-schema": param.schema
         } : {
             ...param,

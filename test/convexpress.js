@@ -116,7 +116,9 @@ describe("convexpress router", () => {
                         tags: ["tag"],
                         parameters: [{
                             name: "param",
-                            schema: {},
+                            schema: {
+                                type: "object"
+                            },
                             "x-schema": {
                                 type: "object"
                             }

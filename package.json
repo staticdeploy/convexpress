@@ -1,6 +1,6 @@
 {
   "name": "convexpress",
-  "version": "1.3.3",
+  "version": "1.4.0-rc1",
   "description": "Employ conventions to register express routes",
   "main": "lib/convexpress.js",
   "scripts": {

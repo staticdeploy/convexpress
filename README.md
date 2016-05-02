@@ -6,70 +6,131 @@
 
 # convexpress
 
-Employ conventions to register express routes.
+Employ conventions to register express routes. This is done by creating route
+definition objects - convroutes - which:
 
-## `convroute` properties
-
-* `path`
-* `method`
-* `handler`
-* `paramters` (optional)
-* `middleware` (optional)
-* `description` (optional)
-* `tags` (optional)
-* `responses` (optional)
+* register the route's method and path
+* handle input validation
+* document the route
 
 ## Install
-`$ npm install convexpress`
+
+`npm install --save convexpress`
 
 ## Use
 
-### Rouotes implementation
+### Define a route (convroute)
 
 ```js
-import convexpress from 'convexpress';
+/* File: src/api/pets/get.js */
+import dbClient from "services/db";
+
+export const path = "/pets";
+export const method = "get";
+export const description = "List pets";
+export const tags = ["pets"];
+export const responses = {
+    "200": {
+        description: "pets list"
+    }
+};
+export const parameters = [{
+    name: "status",
+    description: "Filter by pet status (e.g. available / not available)"
+    in: "query",
+    required: false,
+    type: "string",
+}];
+export async function handler (req, res) {
+    const pets = await dbClient.query(
+        `SELECT * FROM pets WHERE status = ${req.query.status}`
+    );
+    res.status(200).send(pets);
+}
+```
+
+### Wire it all together
+
+```js
+import express from "express";
+import convexpress from "convexpress";
+
+import * as petsGet from "api/pets/get";
+import * as petsPost from "api/pets/post";
 
 const options = {
     info: {
-        title: 'myService',
-        version: '1.0.0'
+        title: "pet store",
+        version: "1.0.0"
     },
-    host: 'localhost:3000'
+    host: "localhost:3000"
 };
 const api = convexpress(options)
-    .serveSwagger() //automatically generate swagger.json
-    .convroute(require('./resourceA/get'))
-    .convroute(require('./resourceA/post'))
+    // Serve swagger definition at /swagger.json
+    .serveSwagger()
+    .convroute(petsGet)
+    .convroute(petsPost);
 
 const server = express()
-    .use(cors(corsOptions))
-    .use(bodyParser.json({limit: '6mb'}))
-    .use(bodyParser.urlencoded({limit: '6mb', extended: true}))
-    .use(api);
+    .use(api)
+    .listen(process.env.PORT)
 ```
 
-### Api implementation
+## API
 
-####get.js
-```js
-export const path = '/resourceA';
-export const method = 'get';
-export const description = 'List resourceA';
-export const tags = ['resourceA'];
-export const responses = {
-    '200': {
-        description: 'resourceA list'
-    }
-};
-export const parameters = [
-    {
-        name: 'id',
-        in: 'query',
-        required: false,
-        type: 'string'
-    }
-];
-export function handler (req, res) {
-    // request handler, return all that client needs
-}
-```
+### convexpress(options)
+
+Create an express router object (convrouter), which the additional methods
+`convroute` and `serveSwagger`.
+
+##### Arguments
+
+* `options` **object**: top-level properties of the swagger definition
+  * `host` **string**
+  * `basePath` **string**
+  * `info` **string**
+
+##### Returns
+
+The express router (convrouter).
+
+### convrouter.convroute(convroute)
+
+Registers a convroute.
+
+#### Arguments
+
+* `convroute` **object** _required_: a convroute definition object:
+  * `path` **string** _required_
+  * `method` **string** _required_
+  * `handler` **function** _required__
+  * `paramters` **Array< object >**
+  * `middleware` **Array< function >**
+  * `description` **string**
+  * `tags` **Array< string >**
+  * `responses` **Map< object >**
+
+##### Returns
+
+The convrouter, to allow for method chaining.
+
+### convrouter.serveSwagger(path)
+
+Registers a route for serving the swagger definition.
+
+#### Arguments
+
+* `path` **string**: the path at which to serve the swagger definition
+
+##### Returns
+
+The convrouter, to allow for method chaining.
+
+
+## Contributing
+
+### Development environment setup
+
+After cloning the repository, install dependencies with `npm install`. Run
+`npm test` to run unit tests, or `npm run dev` to re-run them automatically
+when files change.

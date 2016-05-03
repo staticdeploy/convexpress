@@ -98,7 +98,7 @@ The express router (convrouter).
 
 Registers a convroute.
 
-#### Arguments
+##### Arguments
 
 * `convroute` **object** _required_: a convroute definition object:
   * `path` **string** _required_
@@ -118,7 +118,7 @@ The convrouter, to allow for method chaining.
 
 Registers a route for serving the swagger definition.
 
-#### Arguments
+##### Arguments
 
 * `path` **string**: the path at which to serve the swagger definition
 

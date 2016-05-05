@@ -47,6 +47,7 @@
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
     "ramda": "^0.21.0",
+    "swaggerize-ui": "^1.0.1",
     "type-is": "^1.6.12"
   }
 }

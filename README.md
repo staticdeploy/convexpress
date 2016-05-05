@@ -22,7 +22,7 @@ definition objects - convroutes - which:
 ### Define a route (convroute)
 
 ```js
-/* File: src/api/pets/get.js */
+/* File: src/api-root/pets/get.js */
 import dbClient from "services/db";
 
 export const path = "/pets";
@@ -52,11 +52,12 @@ export async function handler (req, res) {
 ### Wire it all together
 
 ```js
+/* File: src/server.js */
 import express from "express";
 import convexpress from "convexpress";
 
-import * as petsGet from "api/pets/get";
-import * as petsPost from "api/pets/post";
+import * as petsGet from "api-root/pets/get";
+import * as petsPost from "api-root/pets/post";
 
 const options = {
     info: {
@@ -114,13 +115,14 @@ Registers a convroute.
 
 The convrouter, to allow for method chaining.
 
-### convrouter.serveSwagger(path)
+### convrouter.serveSwagger()
 
-Registers a route for serving the swagger definition.
+Registers the route `GET /swagger.json` for serving the swagger definition, and
+the route `GET /swagger` for serving the swagger UI html.
 
 ##### Arguments
 
-* `path` **string**: the path at which to serve the swagger definition
+None.
 
 ##### Returns
 

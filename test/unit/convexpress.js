@@ -1,5 +1,5 @@
 import chai, {expect} from "chai";
-import {all, always, is} from "ramda";
+import {all, always, is, range} from "ramda";
 import sinon from "sinon";
 import sinonChai from "sinon-chai";
 
@@ -33,6 +33,31 @@ describe("convexpress router", () => {
     it("is an express router", () => {
         const app = convexpress({});
         expect(app).to.equal(router);
+    });
+
+});
+
+describe("convroute method", () => {
+
+    const router = {
+        get: sinon.spy(() => router),
+        post: sinon.spy(() => router),
+        put: sinon.spy(() => router),
+        use: sinon.spy(() => router)
+    };
+    const Router = always(router);
+
+    before(() => {
+        convexpress.__Rewire__("Router", Router);
+    });
+    after(() => {
+        convexpress.__ResetDependency__("Router");
+    });
+    beforeEach(() => {
+        router.get.reset();
+        router.post.reset();
+        router.put.reset();
+        router.use.reset();
     });
 
     it("register routes on the express router", () => {
@@ -142,6 +167,50 @@ describe("convexpress router", () => {
                 }
             }
         });
+    });
+
+});
+
+describe("serveSwagger method", () => {
+
+    const router = {
+        get: sinon.spy(() => router),
+        post: sinon.spy(() => router),
+        put: sinon.spy(() => router),
+        use: sinon.spy(() => router)
+    };
+    const Router = always(router);
+
+    before(() => {
+        convexpress.__Rewire__("Router", Router);
+    });
+    after(() => {
+        convexpress.__ResetDependency__("Router");
+    });
+    beforeEach(() => {
+        router.get.reset();
+        router.post.reset();
+        router.put.reset();
+        router.use.reset();
+    });
+
+    it("registers the /swagger.json route on the express router", () => {
+        convexpress({})
+            .serveSwagger();
+        expect(router.get).to.have.callCount(1);
+        const firstCall = router.get.getCall(0);
+        expect(firstCall.args[0]).to.equal("/swagger.json");
+        expect(firstCall.args[1]).to.be.a("function");
+    });
+
+    it("uses the swaggerUi middleware on route /swagger of the express router", () => {
+        convexpress({})
+            .serveSwagger();
+        expect(router.use).to.have.been.calledWith("/swagger");
+        const swaggerCall = range(0, router.use.callCount)
+            .map(callNumber => router.use.getCall(callNumber))
+            .find(call => call.args[0] === "/swagger");
+        expect(swaggerCall.args[1]).to.be.a("function");
     });
 
 });

@@ -1,5 +1,6 @@
 import "babel-polyfill";
 import {Router} from "express";
+import swaggerUi from "swaggerize-ui";
 
 import * as convert from "./convert";
 import parseBody from "./parse-body";
@@ -17,7 +18,7 @@ export default function convexpress (options) {
         produces: ["application/json"],
         paths: {}
     };
-    router.convroute = function (route) {
+    router.convroute = (route) => {
         // Attach route to router
         const middleware = [
             validate.middleware(route.parameters),
@@ -45,8 +46,9 @@ export default function convexpress (options) {
         // Allow method chaining
         return router;
     };
-    router.serveSwagger = function (path = "/swagger.json") {
-        router.get(path, (req, res) => res.status(200).send(router.swagger));
+    router.serveSwagger = () => {
+        router.get("/swagger.json", (req, res) => res.status(200).send(router.swagger));
+        router.use("/swagger", swaggerUi({docs: "/swagger.json"}));
         return router;
     };
     return router;

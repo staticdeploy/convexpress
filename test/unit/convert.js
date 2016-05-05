@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {clone} from "ramda";
 
-import convert, {parameters, path} from "../src/convert";
+import convert, {parameters, path} from "../../src/convert";
 
 describe("path", () => {
     it("converts from expressjs path syntax to swagger path syntax", () => {

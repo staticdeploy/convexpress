@@ -3,7 +3,7 @@ import chaiAsPromised from "chai-as-promised";
 import sinon from "sinon";
 import sinonChai from "sinon-chai";
 
-import {handler, middleware} from "../src/wrap";
+import {handler, middleware} from "../../src/wrap";
 
 chai.use(chaiAsPromised);
 chai.use(sinonChai);

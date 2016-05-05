@@ -1,7 +1,7 @@
 import express from "express";
 import request from "supertest-as-promised";
 
-import parseBody from "../src/parse-body";
+import parseBody from "../../src/parse-body";
 
 describe("ensureJSONBody middleware", () => {
 

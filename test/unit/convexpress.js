@@ -3,7 +3,7 @@ import {all, always, is} from "ramda";
 import sinon from "sinon";
 import sinonChai from "sinon-chai";
 
-import convexpress from "../src/convexpress";
+import convexpress from "../../src/convexpress";
 
 chai.use(sinonChai);
 

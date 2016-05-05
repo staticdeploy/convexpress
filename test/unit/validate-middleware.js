@@ -2,8 +2,8 @@ import {json} from "body-parser";
 import express from "express";
 import request from "supertest-as-promised";
 
-import {middleware} from "../src/validate-middleware";
-import parseBody from "../src/parse-body";
+import {middleware} from "../../src/validate-middleware";
+import parseBody from "../../src/parse-body";
 
 describe("validate.middleware", () => {
 

@@ -64,9 +64,16 @@ describe("swagger", () => {
             });
     });
 
+    it("appending `url=../swagger.json` to query if not present at `/swagger/`", async () => {
+        const res = await request(getServer())
+            .get("/swagger/")
+            .expect(301);
+        expect(res.headers["location"]).to.equal("?url=..%2Fswagger.json");
+    });
+
     it("serving the ui", async () => {
         const res = await request(getServer())
-            .get("/swagger/?url=%2Fswagger.json")
+            .get("/swagger/?url=..%2Fswagger.json")
             .expect(200);
         expect(res.headers["content-type"]).to.equal("text/html; charset=UTF-8");
         expect(res.text).to.contain("<title>Swagger UI</title>");

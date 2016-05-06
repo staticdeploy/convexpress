@@ -118,7 +118,7 @@ The convrouter, to allow for method chaining.
 ### convrouter.serveSwagger()
 
 Registers the route `GET /swagger.json` for serving the swagger definition, and
-the route `GET /swagger` for serving the swagger UI html.
+the route `GET /swagger/` for serving the swagger UI html.
 
 ##### Arguments
 

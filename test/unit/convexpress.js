@@ -203,13 +203,13 @@ describe("serveSwagger method", () => {
         expect(firstCall.args[1]).to.be.a("function");
     });
 
-    it("uses the swaggerUi middleware on route /swagger of the express router", () => {
+    it("uses the swaggerUi middleware on route /swagger/ of the express router", () => {
         convexpress({})
             .serveSwagger();
-        expect(router.use).to.have.been.calledWith("/swagger");
+        expect(router.use).to.have.been.calledWith("/swagger/");
         const swaggerCall = range(0, router.use.callCount)
             .map(callNumber => router.use.getCall(callNumber))
-            .find(call => call.args[0] === "/swagger");
+            .find(call => call.args[0] === "/swagger/");
         expect(swaggerCall.args[1]).to.be.a("function");
     });
 

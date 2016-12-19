@@ -1,8 +1,12 @@
 import {json} from "body-parser";
 import {hasBody} from "type-is";
 
-export default function parseBody () {
-    const jsonMiddleware = json();
+export default function parseBody (options = {}) {
+    const jsonMiddleware = json({
+        limit: options.limit,
+        strict: options.strict,
+        verify: options.verify
+    });
     return (req, res, next) => {
 
         const reqHasBody = hasBody(req);

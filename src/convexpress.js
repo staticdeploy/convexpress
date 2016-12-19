@@ -8,7 +8,7 @@ import * as validate from "./validate-middleware";
 import * as wrap from "./wrap";
 
 export default function convexpress (options) {
-    const router = Router().use(parseBody());
+    const router = Router().use(parseBody(options.bodyParserOptions));
     router.swagger = {
         swagger: "2.0",
         host: options.host,

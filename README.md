@@ -90,6 +90,13 @@ Create an express router object (convrouter), which the additional methods
   * `host` **string**
   * `basePath` **string**
   * `info` **string**
+  * `bodyParserOptions` **object**: options for the json body parser:
+    * `limit` **string** (default `100kb`): maximum body size
+      ([details](https://github.com/expressjs/body-parser#limit))
+    * `strict` **boolean** (default `true`): strictly parse the json body
+      ([details](https://github.com/expressjs/body-parser#strict))
+    * `verify` **function**: a function that verifies the body
+      ([details](https://github.com/expressjs/body-parser#verify))
 
 ##### Returns
 

@@ -30,7 +30,7 @@ module.exports = function getServer() {
             path: "/pets",
             method: "post",
             handler: (req, res) => {
-                res.status(201).send(req.body.species);
+                res.status(201).send(req.body);
             },
             description: "Create pet",
             parameters: [

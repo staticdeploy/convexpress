@@ -3,7 +3,7 @@ const request = require("supertest");
 
 const getServer = require("./get-server");
 
-describe("swagger", () => {
+describe("e2e test: swagger", () => {
     it("serving the (correct) swagger definition", async () => {
         await request(getServer())
             .get("/swagger.json")

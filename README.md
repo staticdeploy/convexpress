@@ -15,7 +15,9 @@ definition objects - convroutes - which:
 
 ## Install
 
-`npm install --save convexpress`
+```sh
+npm install --save convexpress
+```
 
 ## Use
 

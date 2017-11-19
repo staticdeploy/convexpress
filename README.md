@@ -22,28 +22,30 @@ definition objects - convroutes - which:
 ### Define a route (convroute)
 
 ```js
-/* File: src/api-root/pets/get.js */
-import dbClient from "services/db";
+/* File: src/api/pets/get.js */
+// Assuming NODE_PATH=src
+const dbClient = require("services/db");
 
-export const path = "/pets";
-export const method = "get";
-export const description = "List pets";
-export const tags = ["pets"];
-export const responses = {
+exports.path = "/pets";
+exports.method = "get";
+exports.description = "List pets";
+exports.tags = ["pets"];
+exports.responses = {
     "200": {
         description: "pets list"
     }
 };
-export const parameters = [{
+exports.parameters = [{
     name: "status",
     description: "Filter by pet status (e.g. available / not available)"
     in: "query",
     required: false,
     type: "string",
 }];
-export async function handler (req, res) {
+exports.handler = async (req, res) => {
     const pets = await dbClient.query(
-        `SELECT * FROM pets WHERE status = ${req.query.status}`
+        `SELECT * FROM pets WHERE status = $1`,
+        [req.query.status]
     );
     res.status(200).send(pets);
 }
@@ -53,11 +55,8 @@ export async function handler (req, res) {
 
 ```js
 /* File: src/server.js */
-import express from "express";
-import convexpress from "convexpress";
-
-import * as petsGet from "api-root/pets/get";
-import * as petsPost from "api-root/pets/post";
+const express = require("express");
+const convexpress = require("convexpress");
 
 const options = {
     info: {
@@ -69,8 +68,8 @@ const options = {
 const api = convexpress(options)
     // Serve swagger definition at /swagger.json
     .serveSwagger()
-    .convroute(petsGet)
-    .convroute(petsPost);
+    // Assuming NODE_PATH=src
+    .convroute(require("api/pets/get"));
 
 const server = express()
     .use(api)

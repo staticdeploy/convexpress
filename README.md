@@ -19,6 +19,8 @@ definition objects - convroutes - which:
 npm install --save convexpress
 ```
 
+> **Note**: this library requires nodejs >= 8
+
 ## Use
 
 ### Define a route (convroute)

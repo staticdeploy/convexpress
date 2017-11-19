@@ -7,7 +7,7 @@
     "src"
   ],
   "scripts": {
-    "precommit": "yarn lint",
+    "precommit": "yarn lint && yarn test",
     "prettier": "prettier 'src/**/*.js' 'test/**/*.js'",
     "prettify": "yarn prettier --write",
     "lint:prettier": "yarn prettier --list-different",

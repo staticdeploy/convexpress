@@ -1,3 +1,9 @@
+## 2.1.0 (November 19, 2017)
+
+Features:
+
+* add TypeScript type definitions
+
 ## 2.0.0 (November 19, 2017)
 
 Breaking changes:

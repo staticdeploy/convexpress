@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const glob = require("glob");
 const swaggerUi = require("swaggerize-ui");
 
 const convert = require("./convert");
@@ -78,6 +79,11 @@ module.exports = function convexpress(options) {
         *
         */
         router.use("/swagger/", swaggerUi({ docs: "../swagger.json" }));
+        return router;
+    };
+    router.loadFrom = pattern => {
+        const routes = glob.sync(pattern, { absolute: true });
+        routes.forEach(route => router.convroute(require(route)));
         return router;
     };
     return router;

@@ -1,7 +1,10 @@
 const { expect } = require("chai");
+const { createTree, destroyTree } = require("create-fs-tree");
+const os = require("os");
+const path = require("path");
+const proxyquire = require("proxyquire");
 const { all, always, is, range } = require("ramda");
 const sinon = require("sinon");
-const proxyquire = require("proxyquire");
 
 const router = {
     get: sinon.spy(() => router),
@@ -161,5 +164,31 @@ describe("serveSwagger method", () => {
             .map(callNumber => router.use.getCall(callNumber))
             .find(call => call.args[0] === "/swagger/");
         expect(swaggerCall.args[1]).to.be.a("function");
+    });
+});
+
+describe("loadFrom method", () => {
+    const dir = path.join(os.tmpdir(), "api");
+    before(() => {
+        createTree(dir, {
+            pets: {
+                "get.js": 'module.exports = "pets/get.js"',
+                "{petId}": {
+                    "get.js": 'module.exports = "pets/{petId}/get.js"'
+                }
+            }
+        });
+    });
+    after(() => {
+        destroyTree(dir);
+    });
+
+    it("loads routes from files matching the passed-in pattern", () => {
+        const app = convexpress({});
+        sinon.stub(app, "convroute");
+        app.loadFrom(`${dir}/**/*.js`);
+        expect(app.convroute).to.have.callCount(2);
+        expect(app.convroute).to.have.been.calledWith("pets/get.js");
+        expect(app.convroute).to.have.been.calledWith("pets/{petId}/get.js");
     });
 });

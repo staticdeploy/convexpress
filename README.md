@@ -83,7 +83,7 @@ const server = express()
 ### convexpress(options)
 
 Create an express router object (convrouter), which the additional methods
-`convroute` and `serveSwagger`.
+`convroute`, `serveSwagger`, and `loadFrom`.
 
 ##### Arguments
 
@@ -131,6 +131,20 @@ the route `GET /swagger/` for serving the swagger UI html.
 ##### Arguments
 
 None.
+
+##### Returns
+
+The convrouter, to allow for method chaining.
+
+### convrouter.loadFrom(pattern)
+
+Loads and registers convroutes from files matching the specified `pattern`.
+
+##### Arguments
+
+* `pattern` **string** _required_:
+  [glob pattern](https://github.com/isaacs/node-glob) of files to load
+  convroutes from
 
 ##### Returns
 

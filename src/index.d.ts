@@ -41,7 +41,10 @@ declare namespace convexpress {
     interface IOptions {
         host: string;
         basePath?: string;
-        info: string;
+        info: {
+            title: string;
+            version: string;
+        };
         bodyParserOptions?: {
             limit?: OptionsJson["limit"];
             strict?: OptionsJson["strict"];

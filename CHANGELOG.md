@@ -1,3 +1,9 @@
+## 2.1.1 (November 19, 2017)
+
+Features:
+
+* fix type definitions
+
 ## 2.1.0 (November 19, 2017)
 
 Features:

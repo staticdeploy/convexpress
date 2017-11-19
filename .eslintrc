@@ -1,30 +1,19 @@
 {
-    "extends": "eslint:recommended",
-    "parser": "babel-eslint",
-    "env": {
-        "browser": true,
-        "mocha": true,
-        "node": true,
-        "es6": true
+    "extends": [
+        "eslint:recommended",
+        "prettier"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 8,
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true
+        }
     },
-    "rules": {
-        "brace-style": [2, "1tbs"],
-        "comma-spacing": [2, {"before": false, "after": true}],
-        "computed-property-spacing": [2, "never"],
-        "indent": [2, 4],
-        "keyword-spacing": [2, {"before": true, "after": true, "overrides": {}}],
-        "linebreak-style": [2, "unix"],
-        "new-cap": [2, {"capIsNew": false}],
-        "no-console": [0],
-        "no-multi-spaces": [0],
-        "no-underscore-dangle": [0],
-        "object-curly-spacing": [2, "never"],
-        "one-var": [2, "never"],
-        "quotes": [2, "double"],
-        "semi": [2, "always"],
-        "space-before-blocks": [2, "always"],
-        "space-before-function-paren": [2, "always"],
-        "space-in-parens": [2, "never"],
-        "strict": [2, "never"]
+    "env": {
+        "node": true,
+        "mocha": true
+    },
+    "globals": {
+        "Promise": true
     }
 }

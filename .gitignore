@@ -1,4 +1,8 @@
+# Npm + yarn files
 node_modules/
 npm-debug.log
-lib/
+yarn-error.log
+
+# Nyc (test coverage) files
 coverage/
+.nyc_output/

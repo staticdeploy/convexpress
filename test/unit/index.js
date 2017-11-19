@@ -1,65 +1,36 @@
-import chai, {expect} from "chai";
-import {all, always, is, range} from "ramda";
-import sinon from "sinon";
-import sinonChai from "sinon-chai";
+const { expect } = require("chai");
+const { all, always, is, range } = require("ramda");
+const sinon = require("sinon");
+const proxyquire = require("proxyquire");
 
-import convexpress from "../../src/convexpress";
+const router = {
+    get: sinon.spy(() => router),
+    post: sinon.spy(() => router),
+    put: sinon.spy(() => router),
+    use: sinon.spy(() => router)
+};
+const Router = always(router);
+const convexpress = proxyquire("../../src", {
+    express: {
+        Router
+    }
+});
 
-chai.use(sinonChai);
+beforeEach(() => {
+    router.get.reset();
+    router.post.reset();
+    router.put.reset();
+    router.use.reset();
+});
 
 describe("convexpress router", () => {
-
-    const router = {
-        get: sinon.spy(() => router),
-        post: sinon.spy(() => router),
-        put: sinon.spy(() => router),
-        use: sinon.spy(() => router)
-    };
-    const Router = always(router);
-
-    before(() => {
-        convexpress.__Rewire__("Router", Router);
-    });
-    after(() => {
-        convexpress.__ResetDependency__("Router");
-    });
-    beforeEach(() => {
-        router.get.reset();
-        router.post.reset();
-        router.put.reset();
-        router.use.reset();
-    });
-
     it("is an express router", () => {
         const app = convexpress({});
         expect(app).to.equal(router);
     });
-
 });
 
 describe("convroute method", () => {
-
-    const router = {
-        get: sinon.spy(() => router),
-        post: sinon.spy(() => router),
-        put: sinon.spy(() => router),
-        use: sinon.spy(() => router)
-    };
-    const Router = always(router);
-
-    before(() => {
-        convexpress.__Rewire__("Router", Router);
-    });
-    after(() => {
-        convexpress.__ResetDependency__("Router");
-    });
-    beforeEach(() => {
-        router.get.reset();
-        router.post.reset();
-        router.put.reset();
-        router.use.reset();
-    });
-
     it("register routes on the express router", () => {
         const mw = sinon.spy();
         const handler = sinon.spy();
@@ -104,14 +75,16 @@ describe("convroute method", () => {
                 handler: handler,
                 tags: ["tag"],
                 description: "path one",
-                parameters: [{
-                    name: "param",
-                    schema: {
-                        type: "object"
+                parameters: [
+                    {
+                        name: "param",
+                        schema: {
+                            type: "object"
+                        }
                     }
-                }],
+                ],
                 responses: {
-                    "200": {description: "ok"}
+                    "200": { description: "ok" }
                 }
             })
             .convroute({
@@ -119,9 +92,9 @@ describe("convroute method", () => {
                 method: "put",
                 handler: handler,
                 description: "path two",
-                parameters: [{name: "param"}],
+                parameters: [{ name: "param" }],
                 responses: {
-                    "200": {description: "ok"}
+                    "200": { description: "ok" }
                 }
             });
         expect(app.swagger).to.deep.equal({
@@ -139,18 +112,20 @@ describe("convroute method", () => {
                     post: {
                         description: "path one",
                         tags: ["tag"],
-                        parameters: [{
-                            name: "param",
-                            schema: {
-                                type: "object"
-                            },
-                            "x-schema": {
-                                type: "object"
+                        parameters: [
+                            {
+                                name: "param",
+                                schema: {
+                                    type: "object"
+                                },
+                                "x-schema": {
+                                    type: "object"
+                                }
                             }
-                        }],
+                        ],
                         responses: {
-                            "200": {description: "ok"},
-                            "400": {description: "Validation failed"}
+                            "200": { description: "ok" },
+                            "400": { description: "Validation failed" }
                         }
                     }
                 },
@@ -158,45 +133,21 @@ describe("convroute method", () => {
                     put: {
                         description: "path two",
                         tags: [],
-                        parameters: [{name: "param", type: "string"}],
+                        parameters: [{ name: "param", type: "string" }],
                         responses: {
-                            "200": {description: "ok"},
-                            "400": {description: "Validation failed"}
+                            "200": { description: "ok" },
+                            "400": { description: "Validation failed" }
                         }
                     }
                 }
             }
         });
     });
-
 });
 
 describe("serveSwagger method", () => {
-
-    const router = {
-        get: sinon.spy(() => router),
-        post: sinon.spy(() => router),
-        put: sinon.spy(() => router),
-        use: sinon.spy(() => router)
-    };
-    const Router = always(router);
-
-    before(() => {
-        convexpress.__Rewire__("Router", Router);
-    });
-    after(() => {
-        convexpress.__ResetDependency__("Router");
-    });
-    beforeEach(() => {
-        router.get.reset();
-        router.post.reset();
-        router.put.reset();
-        router.use.reset();
-    });
-
     it("registers the /swagger.json route on the express router", () => {
-        convexpress({})
-            .serveSwagger();
+        convexpress({}).serveSwagger();
         expect(router.get).to.have.callCount(1);
         const firstCall = router.get.getCall(0);
         expect(firstCall.args[0]).to.equal("/swagger.json");
@@ -204,13 +155,11 @@ describe("serveSwagger method", () => {
     });
 
     it("uses the swaggerUi middleware on route /swagger/ of the express router", () => {
-        convexpress({})
-            .serveSwagger();
+        convexpress({}).serveSwagger();
         expect(router.use).to.have.been.calledWith("/swagger/");
         const swaggerCall = range(0, router.use.callCount)
             .map(callNumber => router.use.getCall(callNumber))
             .find(call => call.args[0] === "/swagger/");
         expect(swaggerCall.args[1]).to.be.a("function");
     });
-
 });

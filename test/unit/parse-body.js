@@ -1,15 +1,16 @@
-import express from "express";
-import request from "supertest-as-promised";
+const express = require("express");
+const request = require("supertest");
 
-import parseBody from "../../src/parse-body";
+const parseBody = require("../../src/parse-body");
 
 describe("ensureJSONBody middleware", () => {
-
     const server = express()
         .use(parseBody())
-        .all("/", (req, res) => res.status(200).send({
-            body: req.body === undefined ? "__undefined__" : req.body
-        }));
+        .all("/", (req, res) =>
+            res.status(200).send({
+                body: req.body === undefined ? "__undefined__" : req.body
+            })
+        );
 
     describe("415 on non-json requests with a body", () => {
         it("GET", () => {
@@ -55,25 +56,25 @@ describe("ensureJSONBody middleware", () => {
             return request(server)
                 .get("/")
                 .expect(200)
-                .expect({body: "__undefined__"});
+                .expect({ body: "__undefined__" });
         });
         it("POST", () => {
             return request(server)
                 .post("/")
                 .expect(200)
-                .expect({body: "__undefined__"});
+                .expect({ body: "__undefined__" });
         });
         it("PUT", () => {
             return request(server)
                 .put("/")
                 .expect(200)
-                .expect({body: "__undefined__"});
+                .expect({ body: "__undefined__" });
         });
         it("DELETE", () => {
             return request(server)
                 .delete("/")
                 .expect(200)
-                .expect({body: "__undefined__"});
+                .expect({ body: "__undefined__" });
         });
     });
 
@@ -83,28 +84,28 @@ describe("ensureJSONBody middleware", () => {
                 .get("/")
                 .send({})
                 .expect(200)
-                .expect({body: {}});
+                .expect({ body: {} });
         });
         it("POST", () => {
             return request(server)
                 .post("/")
                 .send({})
                 .expect(200)
-                .expect({body: {}});
+                .expect({ body: {} });
         });
         it("PUT", () => {
             return request(server)
                 .put("/")
                 .send({})
                 .expect(200)
-                .expect({body: {}});
+                .expect({ body: {} });
         });
         it("DELETE", () => {
             return request(server)
                 .delete("/")
                 .send({})
                 .expect(200)
-                .expect({body: {}});
+                .expect({ body: {} });
         });
     });
 
@@ -138,5 +139,4 @@ describe("ensureJSONBody middleware", () => {
                 .expect(400);
         });
     });
-
 });

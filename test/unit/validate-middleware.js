@@ -1,14 +1,12 @@
-import {json} from "body-parser";
-import express from "express";
-import request from "supertest-as-promised";
+const { json } = require("body-parser");
+const express = require("express");
+const request = require("supertest");
 
-import {middleware} from "../../src/validate-middleware";
-import parseBody from "../../src/parse-body";
+const { middleware } = require("../../src/validate-middleware");
+const parseBody = require("../../src/parse-body");
 
 describe("validate.middleware", () => {
-
     describe("optional parameters", () => {
-
         const params = [
             {
                 name: "bodyParam",
@@ -44,7 +42,7 @@ describe("validate.middleware", () => {
             return request(server)
                 .post("/pathParamValue?queryParam=queryParamValue")
                 .set("headerParam", "headerParamValue")
-                .send({key: "value"})
+                .send({ key: "value" })
                 .expect(200)
                 .expect("OK");
         });
@@ -60,15 +58,13 @@ describe("validate.middleware", () => {
             return request(server)
                 .post("/pathParamValue?queryParam=queryParamValue")
                 .set("headerParam", "headerParamValue")
-                .send({key: 1})
+                .send({ key: 1 })
                 .expect(400)
                 .expect(/Validation failed for parameter bodyParam in body/);
         });
-
     });
 
     describe("required parameters", () => {
-
         const params = [
             {
                 name: "bodyParam",
@@ -108,7 +104,7 @@ describe("validate.middleware", () => {
             return request(server)
                 .post("/pathParamValue?queryParam=queryParamValue")
                 .set("headerParam", "headerParamValue")
-                .send({key: "value"})
+                .send({ key: "value" })
                 .expect(200)
                 .expect("OK");
         });
@@ -125,7 +121,7 @@ describe("validate.middleware", () => {
             return request(server)
                 .post("/pathParamValue?queryParam=queryParamValue")
                 .set("headerParam", "headerParamValue")
-                .send({key: 1})
+                .send({ key: 1 })
                 .expect(400)
                 .expect(/Validation failed for parameter bodyParam in body/);
         });
@@ -134,7 +130,7 @@ describe("validate.middleware", () => {
             return request(server)
                 .post("/pathParamValue?wrongQueryParam=queryParamValue")
                 .set("headerParam", "headerParamValue")
-                .send({key: "value"})
+                .send({ key: "value" })
                 .expect(400)
                 .expect(/Missing required parameter queryParam in query/);
         });
@@ -142,7 +138,7 @@ describe("validate.middleware", () => {
         it("400 on invalid request [CASE: missing header param]", () => {
             return request(server)
                 .post("/pathParamValue?queryParam=queryParamValue")
-                .send({key: "value"})
+                .send({ key: "value" })
                 .expect(400)
                 .expect(/Missing required parameter headerParam in header/);
         });
@@ -150,12 +146,10 @@ describe("validate.middleware", () => {
         it("400 on invalid request [CASE: multiple errors]", () => {
             return request(server)
                 .post("/pathParamValue")
-                .send({key: "value"})
+                .send({ key: "value" })
                 .expect(400)
                 .expect(/Missing required parameter headerParam in header/)
                 .expect(/Missing required parameter queryParam in query/);
         });
-
     });
-
 });

@@ -1,10 +1,10 @@
-import {expect} from "chai";
-import {clone} from "ramda";
+const { expect } = require("chai");
+const { clone } = require("ramda");
 
-import convert, {parameters, path} from "../../src/convert";
+const { convertSchema, parameters, path } = require("../../src/convert");
 
 describe("path", () => {
-    it("converts from expressjs path syntax to swagger path syntax", () => {
+    it("converts =require(expressjs path syntax to swagger path syntax", () => {
         const expressPaths = [
             "/",
             "/user",
@@ -30,21 +30,24 @@ describe("path", () => {
 });
 
 describe("parameters", () => {
-
     it("forces schema-less parameters into string parameters", () => {
         const inputParameters = [{}];
-        expect(parameters(inputParameters)).to.deep.equal([{
-            type: "string"
-        }]);
+        expect(parameters(inputParameters)).to.deep.equal([
+            {
+                type: "string"
+            }
+        ]);
     });
 
     it("converts parameters' json-schemas into swagger-schemas", () => {
-        const inputParameters = [{
-            schema: {
-                id: "id",
-                type: "string"
+        const inputParameters = [
+            {
+                schema: {
+                    id: "id",
+                    type: "string"
+                }
             }
-        }];
+        ];
         const outputParameters = parameters(inputParameters);
         expect(outputParameters[0].schema).to.deep.equal({
             type: "string"
@@ -52,26 +55,23 @@ describe("parameters", () => {
     });
 
     it("copies parameters' original json-schemas to the x-schema property", () => {
-        const inputParameters = [{
-            schema: {
-                id: "id",
-                type: "string"
+        const inputParameters = [
+            {
+                schema: {
+                    id: "id",
+                    type: "string"
+                }
             }
-        }];
+        ];
         const outputParameters = parameters(inputParameters);
         const originalSchema = inputParameters[0].schema;
         const copiedSchema = outputParameters[0]["x-schema"];
         expect(copiedSchema).to.deep.equal(originalSchema);
     });
-
 });
 
 describe("convertSchema", () => {
-
-    const convertSchema = convert.__GetDependency__("convertSchema");
-
     describe("converts json-schemas into swagger-schemas", () => {
-
         it("schema with unsupported keywords", () => {
             const jsonSchema = {
                 $schema: "http://json-schema.org/draft-04/schema#",
@@ -87,16 +87,20 @@ describe("convertSchema", () => {
         it("array with array items", () => {
             const jsonSchema = {
                 type: "array",
-                items: [{
-                    id: "id",
-                    type: "string"
-                }]
+                items: [
+                    {
+                        id: "id",
+                        type: "string"
+                    }
+                ]
             };
             expect(convertSchema(jsonSchema)).to.deep.equal({
                 type: "array",
-                items: [{
-                    type: "string"
-                }]
+                items: [
+                    {
+                        type: "string"
+                    }
+                ]
             });
         });
 
@@ -163,7 +167,6 @@ describe("convertSchema", () => {
                 properties: {}
             });
         });
-
     });
 
     it("converts json-schemas into swagger-schemas recursively", () => {
@@ -174,10 +177,12 @@ describe("convertSchema", () => {
             properties: {
                 arrayWithArrayItems: {
                     type: "array",
-                    items: [{
-                        id: "id",
-                        type: "string"
-                    }]
+                    items: [
+                        {
+                            id: "id",
+                            type: "string"
+                        }
+                    ]
                 },
                 arrayWithObjectItems: {
                     type: "array",
@@ -215,9 +220,11 @@ describe("convertSchema", () => {
             properties: {
                 arrayWithArrayItems: {
                     type: "array",
-                    items: [{
-                        type: "string"
-                    }]
+                    items: [
+                        {
+                            type: "string"
+                        }
+                    ]
                 },
                 arrayWithObjectItems: {
                     type: "array",
@@ -276,5 +283,4 @@ describe("convertSchema", () => {
         convertSchema(jsonSchema);
         expect(jsonSchema).to.deep.equal(jsonSchemaClone);
     });
-
 });

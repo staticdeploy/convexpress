@@ -1,22 +1,15 @@
-import chai, {expect} from "chai";
-import chaiAsPromised from "chai-as-promised";
-import sinon from "sinon";
-import sinonChai from "sinon-chai";
+const { expect } = require("chai");
+const sinon = require("sinon");
 
-import {handler, middleware} from "../../src/wrap";
-
-chai.use(chaiAsPromised);
-chai.use(sinonChai);
+const { handler, middleware } = require("../../src/wrap");
 
 describe("wrap.handler", () => {
-
     it("returns a function", () => {
         const ret = handler(() => null);
         expect(ret).to.be.a("function");
     });
 
     describe("returns a function which", () => {
-
         it("has length 2", () => {
             const fn = sinon.spy();
             const ret = handler(fn);
@@ -41,7 +34,6 @@ describe("wrap.handler", () => {
         });
 
         describe("when the original function synchronously throws", () => {
-
             it("handles the exception (the promise returned by the wrapped function does not fail)", async () => {
                 const req = {};
                 const res = {
@@ -53,7 +45,7 @@ describe("wrap.handler", () => {
                 await expect(retPromise).to.be.fulfilled;
             });
 
-            it("terminates the request by sending a \"500 Internal server error\" response", async () => {
+            it('terminates the request by sending a "500 Internal server error" response', async () => {
                 const req = {};
                 const res = {
                     status: sinon.spy(() => res),
@@ -84,32 +76,35 @@ describe("wrap.handler", () => {
                 await handler(fn)(req, res);
                 expect(req.log.error).to.have.callCount(1);
                 expect(req.log.error).to.have.been.calledWith(
-                    err, "Uncaught exception"
+                    err,
+                    "Uncaught exception"
                 );
             });
-
         });
 
         describe("when the original function returns an eventually failing promise", () => {
-
             it("handles the failure (the promise returned by the wrapped function does not fail)", async () => {
                 const req = {};
                 const res = {
                     status: sinon.spy(() => res),
                     send: sinon.spy()
                 };
-                const fn = sinon.stub().returns(Promise.reject(new Error("Error")));
+                const fn = sinon
+                    .stub()
+                    .returns(Promise.reject(new Error("Error")));
                 const retPromise = handler(fn)(req, res);
                 await expect(retPromise).to.be.fulfilled;
             });
 
-            it("terminates the request by sending a \"500 Internal server error\" response", async () => {
+            it('terminates the request by sending a "500 Internal server error" response', async () => {
                 const req = {};
                 const res = {
                     status: sinon.spy(() => res),
                     send: sinon.spy()
                 };
-                const fn = sinon.stub().returns(Promise.reject(new Error("Error")));
+                const fn = sinon
+                    .stub()
+                    .returns(Promise.reject(new Error("Error")));
                 await handler(fn)(req, res);
                 expect(res.status).to.have.callCount(1);
                 expect(res.status).to.have.been.calledWith(500);
@@ -134,25 +129,21 @@ describe("wrap.handler", () => {
                 await handler(fn)(req, res);
                 expect(req.log.error).to.have.callCount(1);
                 expect(req.log.error).to.have.been.calledWith(
-                    err, "Uncaught exception"
+                    err,
+                    "Uncaught exception"
                 );
             });
-
         });
-
     });
-
 });
 
 describe("wrap.middleware", () => {
-
     it("returns a function", () => {
         const ret = middleware(() => null);
         expect(ret).to.be.a("function");
     });
 
     describe("returns a function which", () => {
-
         it("has length 3", () => {
             const fn = sinon.spy();
             const ret = middleware(fn);
@@ -178,7 +169,6 @@ describe("wrap.middleware", () => {
         });
 
         describe("when the original function synchronously throws", () => {
-
             it("handles the exception (the returned promise does not fail)", async () => {
                 const req = {};
                 const res = {
@@ -190,7 +180,7 @@ describe("wrap.middleware", () => {
                 await expect(retPromise).to.be.fulfilled;
             });
 
-            it("terminates the request by sending a \"500 Internal server error\" response", async () => {
+            it('terminates the request by sending a "500 Internal server error" response', async () => {
                 const req = {};
                 const res = {
                     status: sinon.spy(() => res),
@@ -221,32 +211,35 @@ describe("wrap.middleware", () => {
                 await middleware(fn)(req, res);
                 expect(req.log.error).to.have.callCount(1);
                 expect(req.log.error).to.have.been.calledWith(
-                    err, "Uncaught exception"
+                    err,
+                    "Uncaught exception"
                 );
             });
-
         });
 
         describe("when the original function returns an eventually failing promise", () => {
-
             it("handles the failure (the promise returned by the wrapped function does not fail)", async () => {
                 const req = {};
                 const res = {
                     status: sinon.spy(() => res),
                     send: sinon.spy()
                 };
-                const fn = sinon.stub().returns(Promise.reject(new Error("Error")));
+                const fn = sinon
+                    .stub()
+                    .returns(Promise.reject(new Error("Error")));
                 const retPromise = middleware(fn)(req, res);
                 await expect(retPromise).to.be.fulfilled;
             });
 
-            it("terminates the request by sending a \"500 Internal server error\" response", async () => {
+            it('terminates the request by sending a "500 Internal server error" response', async () => {
                 const req = {};
                 const res = {
                     status: sinon.spy(() => res),
                     send: sinon.spy()
                 };
-                const fn = sinon.stub().returns(Promise.reject(new Error("Error")));
+                const fn = sinon
+                    .stub()
+                    .returns(Promise.reject(new Error("Error")));
                 await middleware(fn)(req, res);
                 expect(res.status).to.have.callCount(1);
                 expect(res.status).to.have.been.calledWith(500);
@@ -271,12 +264,10 @@ describe("wrap.middleware", () => {
                 await middleware(fn)(req, res);
                 expect(req.log.error).to.have.callCount(1);
                 expect(req.log.error).to.have.been.calledWith(
-                    err, "Uncaught exception"
+                    err,
+                    "Uncaught exception"
                 );
             });
-
         });
-
     });
-
 });

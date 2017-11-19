@@ -1,8 +1,8 @@
-import express from "express";
+const express = require("express");
 
-import convexpress from "../../src/convexpress";
+const convexpress = require("../../src");
 
-export default function getServer () {
+module.exports = function getServer() {
     const options = {
         info: {
             title: "petstore",
@@ -16,10 +16,7 @@ export default function getServer () {
             path: "/pets",
             method: "get",
             handler: (req, res) => {
-                res.status(200).send([
-                    {species: "dog"},
-                    {species: "cat"}
-                ]);
+                res.status(200).send([{ species: "dog" }, { species: "cat" }]);
             },
             tags: ["pets"],
             description: "Get pets",
@@ -36,22 +33,24 @@ export default function getServer () {
                 res.status(201).send(req.body.species);
             },
             description: "Create pet",
-            parameters: [{
-                name: "pet",
-                in: "body",
-                required: true,
-                schema: {
-                    type: "object",
-                    properties: {
-                        species: {
-                            description: "Pet species",
-                            type: "string"
-                        }
-                    },
-                    additionalProperties: false,
-                    required: ["species"]
+            parameters: [
+                {
+                    name: "pet",
+                    in: "body",
+                    required: true,
+                    schema: {
+                        type: "object",
+                        properties: {
+                            species: {
+                                description: "Pet species",
+                                type: "string"
+                            }
+                        },
+                        additionalProperties: false,
+                        required: ["species"]
+                    }
                 }
-            }],
+            ],
             responses: {
                 "201": {
                     description: "Created pet species"
@@ -59,4 +58,4 @@ export default function getServer () {
             }
         });
     return express().use(api);
-}
+};

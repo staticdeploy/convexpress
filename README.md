@@ -135,11 +135,6 @@ None.
 
 The convrouter, to allow for method chaining.
 
-
 ## Contributing
 
-### Development environment setup
-
-After cloning the repository, install dependencies with `npm install`. Run
-`npm test` to run unit tests, or `npm run dev` to re-run them automatically
-when files change.
+See [CONTRIBUTING.md](./CONTRIBUTING.md).

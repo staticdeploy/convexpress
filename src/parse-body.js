@@ -1,16 +1,15 @@
-import {json} from "body-parser";
-import {hasBody} from "type-is";
+const { json } = require("body-parser");
+const { hasBody } = require("type-is");
 
-export default function parseBody (options = {}) {
+module.exports = function parseBody(options = {}) {
     const jsonMiddleware = json({
         limit: options.limit,
         strict: options.strict,
         verify: options.verify
     });
     return (req, res, next) => {
-
         const reqHasBody = hasBody(req);
-        const reqBodyIsEmpty = (parseInt(req.headers["content-length"]) === 0);
+        const reqBodyIsEmpty = parseInt(req.headers["content-length"]) === 0;
 
         /*
         *   If the request doesn't have a body or the body is empty, go on
@@ -37,6 +36,5 @@ export default function parseBody (options = {}) {
         *   middleware will take care of sending an error back to the client)
         */
         jsonMiddleware(req, res, next);
-
     };
-}
+};

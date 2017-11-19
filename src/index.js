@@ -1,13 +1,12 @@
-import "babel-polyfill";
-import {Router} from "express";
-import swaggerUi from "swaggerize-ui";
+const { Router } = require("express");
+const swaggerUi = require("swaggerize-ui");
 
-import * as convert from "./convert";
-import parseBody from "./parse-body";
-import * as validate from "./validate-middleware";
-import * as wrap from "./wrap";
+const convert = require("./convert");
+const parseBody = require("./parse-body");
+const validate = require("./validate-middleware");
+const wrap = require("./wrap");
 
-export default function convexpress (options) {
+module.exports = function convexpress(options) {
     const router = Router().use(parseBody(options.bodyParserOptions));
     router.swagger = {
         swagger: "2.0",
@@ -18,7 +17,7 @@ export default function convexpress (options) {
         produces: ["application/json"],
         paths: {}
     };
-    router.convroute = (route) => {
+    router.convroute = route => {
         // Attach route to router
         const middleware = [
             validate.middleware(route.parameters),
@@ -47,7 +46,9 @@ export default function convexpress (options) {
         return router;
     };
     router.serveSwagger = () => {
-        router.get("/swagger.json", (req, res) => res.status(200).send(router.swagger));
+        router.get("/swagger.json", (req, res) =>
+            res.status(200).send(router.swagger)
+        );
         /*
         *   We use `../swagger.json` instead of `/swagger.json` for the docs
         *   definition url because the swagger.json route we registered above
@@ -76,8 +77,8 @@ export default function convexpress (options) {
         *     `/swagger.json`, while it's actually at `/api/v1/swagger.json`
         *
         */
-        router.use("/swagger/", swaggerUi({docs: "../swagger.json"}));
+        router.use("/swagger/", swaggerUi({ docs: "../swagger.json" }));
         return router;
     };
     return router;
-}
+};

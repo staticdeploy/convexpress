@@ -1,7 +1,7 @@
-import swaggerUnsupportedKeywords from "./swagger-unsupported-keywords";
-import {clone, is, map} from "ramda";
+const swaggerUnsupportedKeywords = require("./swagger-unsupported-keywords");
+const { clone, is, map } = require("ramda");
 
-export function path (expressPath) {
+exports.path = function path(expressPath) {
     /*
     *   Converts path parameters from the expressjs format to the swagger
     *   format. Example:
@@ -9,18 +9,23 @@ export function path (expressPath) {
     *   /user/:id/roles/:role -> /user/{id}/roles/{role}
     */
     return expressPath.replace(/:(\w+)/g, "{$1}");
-}
+};
 
-function convertSchema (jsonSchema) {
-    const swaggerSchema = {...jsonSchema};
+exports.convertSchema = function convertSchema(jsonSchema) {
+    const swaggerSchema = { ...jsonSchema };
     if (jsonSchema.type === "object") {
         if (jsonSchema.properties) {
             // each property is a json-schema
-            swaggerSchema.properties = map(convertSchema, jsonSchema.properties);
+            swaggerSchema.properties = map(
+                convertSchema,
+                jsonSchema.properties
+            );
         }
         if (is(Object, jsonSchema.additionalProperties)) {
             // if `additionalProperties` is an object, it's a json-schema
-            swaggerSchema.additionalProperties = convertSchema(jsonSchema.additionalProperties);
+            swaggerSchema.additionalProperties = convertSchema(
+                jsonSchema.additionalProperties
+            );
         }
     }
     if (jsonSchema.type === "array") {
@@ -36,9 +41,9 @@ function convertSchema (jsonSchema) {
         delete swaggerSchema[keyword];
     });
     return swaggerSchema;
-}
+};
 
-export function parameters (parameters = []) {
+exports.parameters = function parameters(parameters = []) {
     /*
     *   If there a schema property in the parameter definition, that property
     *   can contain any valid json-schema. swagger however doesn't fully support
@@ -51,21 +56,25 @@ export function parameters (parameters = []) {
     *   specify it to avoid validation errors for the swagger file that could
     *   occur if the user forgets to set the type property.
     */
-    return parameters.map(param => (
-        param.schema ? {
-            ...param,
-            // Clone the schema to avoid accidental mutations that may occur
-            // inside convertSchema. In fact, even though convertSchema should
-            // not mutate its input, accidental mutations could result in
-            // incorrect validation (since it's the same schema object used by
-            // the validation function). So better be safe than sorry.
-            schema: convertSchema(clone(param.schema)),
-            // Keep the full schema around, which could be useful for some
-            // consumers of the swagger definition
-            "x-schema": param.schema
-        } : {
-            ...param,
-            type: "string"
-        }
-    ));
-}
+    return parameters.map(
+        param =>
+            param.schema
+                ? {
+                      ...param,
+                      // Clone the schema to avoid accidental mutations that may
+                      // occur inside convertSchema. In fact, even though
+                      // convertSchema should  not mutate its input, accidental
+                      // mutations could result in incorrect validation (since
+                      // it's the same schema object used by the validation
+                      // function). So better be safe than sorry.
+                      schema: exports.convertSchema(clone(param.schema)),
+                      // Keep the full schema around, which could be useful for
+                      // some consumers of the swagger definition
+                      "x-schema": param.schema
+                  }
+                : {
+                      ...param,
+                      type: "string"
+                  }
+    );
+};

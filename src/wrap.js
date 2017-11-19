@@ -11,7 +11,7 @@
 *   [1]: http://expressjs.com/en/guide/error-handling.html
 */
 
-export function handler (fn) {
+exports.handler = function handler(fn) {
     return async (req, res) => {
         try {
             await fn(req, res);
@@ -22,9 +22,9 @@ export function handler (fn) {
             req.log && req.log.error(err, "Uncaught exception");
         }
     };
-}
+};
 
-export function middleware (fn) {
+exports.middleware = function middleware(fn) {
     return async (req, res, next) => {
         try {
             await fn(req, res, next);
@@ -35,4 +35,4 @@ export function middleware (fn) {
             req.log && req.log.error(err, "Uncaught exception");
         }
     };
-}
+};

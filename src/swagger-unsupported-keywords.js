@@ -1,4 +1,4 @@
-export default [
+module.exports = [
     // Object specific
     "patternProperties",
     "dependencies",

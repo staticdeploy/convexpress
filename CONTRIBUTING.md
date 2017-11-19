@@ -1,4 +1,4 @@
-### Development environment setup
+## Development environment setup
 
 To get started developing the library, clone the project and install
 dependencies with [yarn](https://yarnpkg.com/). Then you can either:

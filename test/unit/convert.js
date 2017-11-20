@@ -4,7 +4,7 @@ const { clone } = require("ramda");
 const { convertSchema, parameters, path } = require("../../src/convert");
 
 describe("path", () => {
-    it("converts =require(expressjs path syntax to swagger path syntax", () => {
+    it("converts from expressjs path syntax to swagger path syntax", () => {
         const expressPaths = [
             "/",
             "/user",

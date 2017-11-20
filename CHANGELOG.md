@@ -1,3 +1,9 @@
+## 2.2.0 (November 20, 2017)
+
+Features:
+
+* support default exports in `loadFrom`
+
 ## 2.1.1 (November 19, 2017)
 
 Features:

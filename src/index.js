@@ -82,8 +82,15 @@ module.exports = function convexpress(options) {
         return router;
     };
     router.loadFrom = pattern => {
-        const routes = glob.sync(pattern, { absolute: true });
-        routes.forEach(route => router.convroute(require(route)));
+        const routePaths = glob.sync(pattern, { absolute: true });
+        routePaths.forEach(routePath => {
+            const routeExport = require(routePath);
+            const route =
+                routeExport && routeExport.default
+                    ? routeExport.default
+                    : routeExport;
+            router.convroute(route);
+        });
         return router;
     };
     return router;

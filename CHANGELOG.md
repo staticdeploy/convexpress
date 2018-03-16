@@ -1,3 +1,14 @@
+## 2.3.0 (March 16, 2018)
+
+Features:
+
+* add `cross-env` package to support all OS enviroment variables
+* change the single quote on script command to support all OS
+* add the invalid JSON error (#13)
+* fix the code example on README
+* update `ajv` dependency to a stable version
+* remove `babel-polyfill` as peerDependency (#14)
+
 ## 2.2.0 (November 20, 2017)
 
 Features:

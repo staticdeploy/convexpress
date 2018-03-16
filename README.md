@@ -41,7 +41,7 @@ exports.responses = {
 };
 exports.parameters = [{
     name: "status",
-    description: "Filter by pet status (e.g. available / not available)"
+    description: "Filter by pet status (e.g. available / not available)",
     in: "query",
     required: false,
     type: "string",

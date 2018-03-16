@@ -9,6 +9,15 @@ const wrap = require("./wrap");
 
 module.exports = function convexpress(options) {
     const router = Router().use(parseBody(options.bodyParserOptions));
+    router.use((err, req, res, next) => {
+        if (err instanceof SyntaxError) {
+            return res.status(415).send({
+                message: "Invalid JSON"
+            });
+        } else {
+            next();
+        }
+    });
     router.swagger = {
         swagger: "2.0",
         host: options.host,

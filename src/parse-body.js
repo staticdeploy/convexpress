@@ -35,6 +35,28 @@ module.exports = function parseBody(options = {}) {
         *   out to be incorrectly encoded - e.g. not a valid json string - the
         *   middleware will take care of sending an error back to the client)
         */
-        jsonMiddleware(req, res, next);
+        jsonMiddleware(req, res, err => {
+            if (err) {
+                let text, errCode;
+                switch (err.type) {
+                    case "charset.unsupported":
+                        text = "Invalid JSON Charset";
+                        errCode = 415;
+                        break;
+                    case "encoding.unsupported":
+                        text = "Invalid JSON Content-Encoding";
+                        errCode = 415;
+                        break;
+                    case "entity.parse.failed":
+                        text = "Invalid JSON Syntax";
+                        errCode = 400;
+                        break;
+                }
+                return res.status(errCode).send({
+                    message: text
+                });
+            }
+            next();
+        });
     };
 };

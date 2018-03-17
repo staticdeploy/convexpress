@@ -139,4 +139,94 @@ describe("ensureJSONBody middleware", () => {
                 .expect(400);
         });
     });
+
+    describe("415 on invalid json charset", () => {
+        it("GET", () => {
+            return request(server)
+                .get("/")
+                .set("Content-Type", "application/json; charset=ISO-8859-1")
+                .send({})
+                .expect(415)
+                .expect({
+                    message: "Invalid JSON Charset"
+                });
+        });
+        it("POST", () => {
+            return request(server)
+                .post("/")
+                .set("Content-Type", "application/json; charset=ISO-8859-1")
+                .send({})
+                .expect(415)
+                .expect({
+                    message: "Invalid JSON Charset"
+                });
+        });
+        it("PUT", () => {
+            return request(server)
+                .put("/")
+                .set("Content-Type", "application/json; charset=ISO-8859-1")
+                .send({})
+                .expect(415)
+                .expect({
+                    message: "Invalid JSON Charset"
+                });
+        });
+        it("DELETE", () => {
+            return request(server)
+                .delete("/")
+                .set("Content-Type", "application/json; charset=ISO-8859-1")
+                .send({})
+                .expect(415)
+                .expect({
+                    message: "Invalid JSON Charset"
+                });
+        });
+    });
+
+    describe("415 on invalid json content-encoding", () => {
+        it("GET", () => {
+            return request(server)
+                .get("/")
+                .set("Content-Encoding", "error")
+                .set("Content-Type", "application/json")
+                .send({})
+                .expect(415)
+                .expect({
+                    message: "Invalid JSON Content-Encoding"
+                });
+        });
+        it("POST", () => {
+            return request(server)
+                .post("/")
+                .set("Content-Encoding", "error")
+                .set("Content-Type", "application/json")
+                .send({})
+                .expect(415)
+                .expect({
+                    message: "Invalid JSON Content-Encoding"
+                });
+        });
+        it("PUT", () => {
+            return request(server)
+                .put("/")
+                .set("Content-Encoding", "error")
+                .set("Content-Type", "application/json")
+                .send({})
+                .expect(415)
+                .expect({
+                    message: "Invalid JSON Content-Encoding"
+                });
+        });
+        it("DELETE", () => {
+            return request(server)
+                .delete("/")
+                .set("Content-Encoding", "error")
+                .set("Content-Type", "application/json")
+                .send({})
+                .expect(415)
+                .expect({
+                    message: "Invalid JSON Content-Encoding"
+                });
+        });
+    });
 });

@@ -1,13 +1,16 @@
-## 2.3.0 (March 16, 2018)
+## 2.2.1 (March 22, 2018)
 
-Features:
+Fixes:
 
-* add `cross-env` package to support all OS enviroment variables
-* change the single quote on script command to support all OS
-* add the invalid JSON error (#13)
-* fix the code example on README
-* update `ajv` dependency to a stable version
+* return body-parsing errors as JSON (#13)
 * remove `babel-polyfill` as peerDependency (#14)
+
+Misc:
+
+* update dependencies
+* use `cross-env` in npm scripts to support all OS-es
+* change single quotes in npm scripts to support all OS-es
+* fix code example in README
 
 ## 2.2.0 (November 20, 2017)
 

@@ -55,7 +55,7 @@ exports.handler = async (req, res) => {
 }
 ```
 
-### Wire it all together
+### Register the route and serve it
 
 ```js
 /* File: src/server.js */
@@ -70,14 +70,16 @@ const options = {
     host: "localhost:3000"
 };
 const api = convexpress(options)
-    // Serve swagger definition at /swagger.json
+    // Serve the API's swagger definition at /swagger.json
     .serveSwagger()
-    // Assuming NODE_PATH=src
-    .convroute(require("api/pets/get"));
+    // Register the route (assuming NODE_PATH=src)
+    .convroute(require("api/pets/get"))
+    // Or register multiple routes at once
+    .loadFrom(`${__dirname}/api/**/*.js`);
 
 const server = express()
     .use(api)
-    .listen(process.env.PORT)
+    .listen(process.env.PORT);
 ```
 
 ## API

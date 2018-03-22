@@ -20,10 +20,10 @@ const convexpress = proxyquire("../../src", {
 });
 
 beforeEach(() => {
-    router.get.reset();
-    router.post.reset();
-    router.put.reset();
-    router.use.reset();
+    router.get.resetHistory();
+    router.post.resetHistory();
+    router.put.resetHistory();
+    router.use.resetHistory();
 });
 
 describe("convexpress router", () => {

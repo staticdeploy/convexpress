@@ -115,28 +115,32 @@ describe("ensureJSONBody middleware", () => {
                 .get("/")
                 .set("Content-Type", "application/json")
                 .send("invalidJSON")
-                .expect(400);
+                .expect(400)
+                .expect({ message: "Invalid JSON Syntax" });
         });
         it("POST", () => {
             return request(server)
                 .post("/")
                 .set("Content-Type", "application/json")
                 .send("invalidJSON")
-                .expect(400);
+                .expect(400)
+                .expect({ message: "Invalid JSON Syntax" });
         });
         it("PUT", () => {
             return request(server)
                 .put("/")
                 .set("Content-Type", "application/json")
                 .send("invalidJSON")
-                .expect(400);
+                .expect(400)
+                .expect({ message: "Invalid JSON Syntax" });
         });
         it("DELETE", () => {
             return request(server)
                 .delete("/")
                 .set("Content-Type", "application/json")
                 .send("invalidJSON")
-                .expect(400);
+                .expect(400)
+                .expect({ message: "Invalid JSON Syntax" });
         });
     });
 
@@ -147,9 +151,7 @@ describe("ensureJSONBody middleware", () => {
                 .set("Content-Type", "application/json; charset=ISO-8859-1")
                 .send({})
                 .expect(415)
-                .expect({
-                    message: "Invalid JSON Charset"
-                });
+                .expect({ message: "Invalid JSON Charset" });
         });
         it("POST", () => {
             return request(server)
@@ -157,9 +159,7 @@ describe("ensureJSONBody middleware", () => {
                 .set("Content-Type", "application/json; charset=ISO-8859-1")
                 .send({})
                 .expect(415)
-                .expect({
-                    message: "Invalid JSON Charset"
-                });
+                .expect({ message: "Invalid JSON Charset" });
         });
         it("PUT", () => {
             return request(server)
@@ -167,9 +167,7 @@ describe("ensureJSONBody middleware", () => {
                 .set("Content-Type", "application/json; charset=ISO-8859-1")
                 .send({})
                 .expect(415)
-                .expect({
-                    message: "Invalid JSON Charset"
-                });
+                .expect({ message: "Invalid JSON Charset" });
         });
         it("DELETE", () => {
             return request(server)
@@ -177,9 +175,7 @@ describe("ensureJSONBody middleware", () => {
                 .set("Content-Type", "application/json; charset=ISO-8859-1")
                 .send({})
                 .expect(415)
-                .expect({
-                    message: "Invalid JSON Charset"
-                });
+                .expect({ message: "Invalid JSON Charset" });
         });
     });
 
@@ -191,9 +187,7 @@ describe("ensureJSONBody middleware", () => {
                 .set("Content-Type", "application/json")
                 .send({})
                 .expect(415)
-                .expect({
-                    message: "Invalid JSON Content-Encoding"
-                });
+                .expect({ message: "Invalid JSON Content-Encoding" });
         });
         it("POST", () => {
             return request(server)
@@ -202,9 +196,7 @@ describe("ensureJSONBody middleware", () => {
                 .set("Content-Type", "application/json")
                 .send({})
                 .expect(415)
-                .expect({
-                    message: "Invalid JSON Content-Encoding"
-                });
+                .expect({ message: "Invalid JSON Content-Encoding" });
         });
         it("PUT", () => {
             return request(server)
@@ -213,9 +205,7 @@ describe("ensureJSONBody middleware", () => {
                 .set("Content-Type", "application/json")
                 .send({})
                 .expect(415)
-                .expect({
-                    message: "Invalid JSON Content-Encoding"
-                });
+                .expect({ message: "Invalid JSON Content-Encoding" });
         });
         it("DELETE", () => {
             return request(server)
@@ -224,9 +214,7 @@ describe("ensureJSONBody middleware", () => {
                 .set("Content-Type", "application/json")
                 .send({})
                 .expect(415)
-                .expect({
-                    message: "Invalid JSON Content-Encoding"
-                });
+                .expect({ message: "Invalid JSON Content-Encoding" });
         });
     });
 });

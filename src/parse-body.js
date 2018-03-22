@@ -31,30 +31,34 @@ module.exports = function parseBody(options = {}) {
 
         /*
         *   Here the request has a non-empty, json-encoded body. We delegate its
-        *   handling to the body-parser's `json` middleware. (If the body turns
-        *   out to be incorrectly encoded - e.g. not a valid json string - the
-        *   middleware will take care of sending an error back to the client)
+        *   handling to the body-parser's `json` middleware, though we
+        *   interecept errors in order to always return a json response.
         */
         jsonMiddleware(req, res, err => {
             if (err) {
-                let text, errCode;
+                let message;
+                let statusCode;
                 switch (err.type) {
                     case "charset.unsupported":
-                        text = "Invalid JSON Charset";
-                        errCode = 415;
+                        message = "Invalid JSON Charset";
+                        statusCode = 415;
                         break;
                     case "encoding.unsupported":
-                        text = "Invalid JSON Content-Encoding";
-                        errCode = 415;
+                        message = "Invalid JSON Content-Encoding";
+                        statusCode = 415;
                         break;
                     case "entity.parse.failed":
-                        text = "Invalid JSON Syntax";
-                        errCode = 400;
+                        message = "Invalid JSON Syntax";
+                        statusCode = 400;
+                        break;
+                    default:
+                        req.log &&
+                            req.log.error(err, "Unknown error parsing body");
+                        message = "Internal server error";
+                        statusCode = 500;
                         break;
                 }
-                return res.status(errCode).send({
-                    message: text
-                });
+                return res.status(statusCode).send({ message });
             }
             next();
         });

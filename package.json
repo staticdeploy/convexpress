@@ -54,7 +54,6 @@
     "glob": "^7.1.2",
     "ramda": "^0.25.0",
     "swagger-ui-express": "^4.0.1",
-    "swaggerize-ui": "^1.0.1",
     "type-is": "^1.6.16"
   }
 }

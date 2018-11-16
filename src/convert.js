@@ -78,3 +78,7 @@ exports.parameters = function parameters(parameters = []) {
                   }
     );
 };
+
+exports.method = function method(method) {
+    return method.toLowerCase();
+};

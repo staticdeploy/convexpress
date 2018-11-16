@@ -1,7 +1,12 @@
 const { expect } = require("chai");
 const { clone } = require("ramda");
 
-const { convertSchema, parameters, path } = require("../../src/convert");
+const {
+    convertSchema,
+    parameters,
+    path,
+    method
+} = require("../../src/convert");
 
 describe("path", () => {
     it("converts from expressjs path syntax to swagger path syntax", () => {
@@ -282,5 +287,15 @@ describe("convertSchema", () => {
         const jsonSchemaClone = clone(jsonSchema);
         convertSchema(jsonSchema);
         expect(jsonSchema).to.deep.equal(jsonSchemaClone);
+    });
+});
+
+describe("method", () => {
+    it("converts an uppercase method to a lowercase one", () => {
+        expect(method("POST")).to.deep.equal("post");
+    });
+
+    it("doesn't convert an already-normalized method", () => {
+        expect(method("post")).to.deep.equal("post");
     });
 });

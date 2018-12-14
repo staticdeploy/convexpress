@@ -24,7 +24,7 @@ module.exports = function convexpress(options) {
             validate.middleware(route.parameters),
             ...(route.middleware || [])
         ];
-        router[route.method](
+        router[convert.method(route.method)](
             route.path,
             middleware.map(wrap.middleware),
             wrap.handler(route.handler)

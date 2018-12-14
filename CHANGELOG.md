@@ -1,3 +1,18 @@
+## 2.3.0 (December 14, 2018)
+
+Features:
+
+- migrate to better-maintained swagger ui
+
+Fixes:
+
+- accept convroutes defining methods in uppercase (`GET` instead of `get`)
+
+Misc:
+
+- update dependencies
+- migrate from Travis CI to CircleCI
+
 ## 2.2.1 (March 22, 2018)
 
 Fixes:

@@ -32,6 +32,7 @@ module.exports = function getServer() {
             handler: (req, res) => {
                 res.status(201).send(req.body);
             },
+            tags: ["pets"],
             description: "Create pet",
             parameters: [
                 {

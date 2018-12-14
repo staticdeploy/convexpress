@@ -12,17 +12,17 @@ module.exports = function parseBody(options = {}) {
         const reqBodyIsEmpty = parseInt(req.headers["content-length"]) === 0;
 
         /*
-        *   If the request doesn't have a body or the body is empty, go on
-        *   without setting `req.body`.
-        */
+         *  If the request doesn't have a body or the body is empty, go on
+         *  without setting `req.body`.
+         */
         if (!reqHasBody || reqBodyIsEmpty) {
             return next();
         }
 
         /*
-        *   Here the request has a non-empty body. If it's not json, send a 415
-        *   error.
-        */
+         *  Here the request has a non-empty body. If it's not json, send a 415
+         *  error.
+         */
         if (!req.is("json")) {
             return res.status(415).send({
                 message: "Body must have Content-Type application/json"
@@ -30,10 +30,10 @@ module.exports = function parseBody(options = {}) {
         }
 
         /*
-        *   Here the request has a non-empty, json-encoded body. We delegate its
-        *   handling to the body-parser's `json` middleware, though we
-        *   interecept errors in order to always return a json response.
-        */
+         *  Here the request has a non-empty, json-encoded body. We delegate its
+         *  handling to the body-parser's `json` middleware, though we
+         *  interecept errors in order to always return a json response.
+         */
         jsonMiddleware(req, res, err => {
             if (err) {
                 let message;

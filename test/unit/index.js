@@ -3,8 +3,9 @@ const { createTree, destroyTree } = require("create-fs-tree");
 const os = require("os");
 const path = require("path");
 const proxyquire = require("proxyquire");
-const { all, always, is, range } = require("ramda");
+const { all, always, is } = require("ramda");
 const sinon = require("sinon");
+const swaggerUi = require("swagger-ui-express");
 
 const router = {
     get: sinon.spy(() => router),
@@ -149,23 +150,24 @@ describe("convroute method", () => {
 });
 
 describe("serveSwagger method", () => {
-    it("registers the /swagger.json route on the express router", () => {
-        // TODO: review this more carefully (call count from 1 to 2)
+    it("registers the /swagger.json and the /swagger/ routes on the express router", () => {
         convexpress({}).serveSwagger();
-        expect(router.get).to.have.callCount(2);
-        const firstCall = router.get.getCall(0);
-        expect(firstCall.args[0]).to.equal("/swagger.json");
-        expect(firstCall.args[1]).to.be.a("function");
+        expect(router.get).to.have.been.calledWith(
+            "/swagger.json",
+            sinon.match.func
+        );
+        expect(router.get).to.have.been.calledWith(
+            "/swagger/",
+            sinon.match.func
+        );
     });
 
     it("uses the swaggerUi middleware on route /swagger/ of the express router", () => {
         convexpress({}).serveSwagger();
-        expect(router.use).to.have.been.calledWith("/swagger/");
-        const swaggerCall = range(0, router.use.callCount)
-            .map(callNumber => router.use.getCall(callNumber))
-            .find(call => call.args[0] === "/swagger/");
-        expect(swaggerCall.args[1][0]).to.be.a("function");
-        expect(swaggerCall.args[1][1]).to.be.a("function");
+        expect(router.use).to.have.been.calledWith(
+            "/swagger/",
+            swaggerUi.serve
+        );
     });
 });
 

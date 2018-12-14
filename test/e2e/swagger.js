@@ -31,7 +31,7 @@ describe("e2e test: swagger", () => {
                         },
                         post: {
                             description: "Create pet",
-                            tags: [],
+                            tags: ["pets"],
                             parameters: [
                                 {
                                     name: "pet",
@@ -71,15 +71,9 @@ describe("e2e test: swagger", () => {
             });
     });
 
-    it("appending `url=../swagger.json` to query if not present at `/swagger/`", async () => {
-        // TODO: review this carefully (no 301 url redirect)
-        const res = await request(getServer()).get("/swagger/");
-        expect(res.headers["location"]).to.equal(undefined);
-    });
-
     it("serving the ui", async () => {
         const res = await request(getServer())
-            .get("/swagger/?url=..%2Fswagger.json")
+            .get("/swagger/")
             .expect(200);
         expect(res.headers["content-type"]).to.equal(
             "text/html; charset=utf-8"

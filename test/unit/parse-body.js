@@ -3,7 +3,7 @@ const request = require("supertest");
 
 const parseBody = require("../../src/parse-body");
 
-describe("ensureJSONBody middleware", () => {
+describe("parseBody middleware", () => {
     const server = express()
         .use(parseBody())
         .all("/", (req, res) =>

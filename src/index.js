@@ -19,12 +19,15 @@ module.exports = function convexpress(options) {
         paths: {}
     };
     router.convroute = route => {
+        // Make sure the method is lowercase, otherwise router[method] is
+        // undefined
+        const method = convert.method(route.method);
         // Attach route to router
         const middleware = [
             validate.middleware(route.parameters),
             ...(route.middleware || [])
         ];
-        router[convert.method(route.method)](
+        router[method](
             route.path,
             middleware.map(wrap.middleware),
             wrap.handler(route.handler)
@@ -33,7 +36,7 @@ module.exports = function convexpress(options) {
         const swaggerPath = convert.path(route.path);
         router.swagger.paths[swaggerPath] = {
             ...router.swagger.paths[swaggerPath],
-            [route.method]: {
+            [method]: {
                 description: route.description,
                 tags: route.tags || [],
                 parameters: convert.parameters(route.parameters),
@@ -50,6 +53,7 @@ module.exports = function convexpress(options) {
         router.get("/swagger.json", (req, res) =>
             res.status(200).send(router.swagger)
         );
+        router.use("/swagger/", swaggerUi.serve);
         /*
          *  We use `../swagger.json` instead of `/swagger.json` for the docs
          *  definition url because the swagger.json route we registered above
@@ -78,7 +82,6 @@ module.exports = function convexpress(options) {
          *    `/swagger.json`, while it's actually at `/api/v1/swagger.json`
          *
          */
-        router.use("/swagger/", swaggerUi.serve);
         router.get(
             "/swagger/",
             swaggerUi.setup(null, { swaggerUrl: "../swagger.json" })

@@ -1,6 +1,6 @@
 {
   "name": "convexpress",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Employ conventions to register express routes",
   "main": "src/index.js",
   "typings": "src/index.d.ts",

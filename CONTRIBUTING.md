@@ -15,15 +15,15 @@ dependencies with [yarn](https://yarnpkg.com/). Then you can either:
 
 ## Release
 
-* Run `npm version x.x.x` to bump a new version of the package. The command
-  will set the specified version number in `package.json`, commit the change,
-  tag the commit with `vx.x.x`
+- Run `npm version x.x.x` to bump a new version of the package. The command will
+  set the specified version number in `package.json`, commit the change, tag the
+  commit with `vx.x.x`
 
-* Push the commit and the tag to github: `git push --tags origin master`
+- Push the commit and the tag to github: `git push --tags origin master`
 
-* If linting and automated tests pass, the module will automatically be
+- If linting and automated tests pass, the module will automatically be
   published to npm
 
 > **Note**: you can use convenience commands `npm version major`,
-> `npm version minor`, `npm version patch` to bump the consecutive
-> major / minor / patch version of the package.
+> `npm version minor`, `npm version patch` to bump the consecutive major / minor
+> / patch version of the package.

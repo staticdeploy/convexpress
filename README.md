@@ -6,154 +6,67 @@
 
 # convexpress
 
-Employ conventions to register express routes. This is done by creating route
-definition objects - convroutes - which:
-
-- register the route's method and path
-- handle input validation
-- document the route
+Employ conventions to register express routes.
 
 ## Install
 
 ```sh
-npm install --save convexpress
+yarn add convexpress
 ```
 
 > **Note**: this library requires nodejs >= 8
 
-## Use
+## Quickstart
 
-### Define a route (convroute)
+### Define a convroute
 
-```js
-/* File: src/api/pets/get.js */
-// Assuming NODE_PATH=src
-const dbClient = require("services/db");
+```ts
+// src/api/pets/get.ts
+import { Convexpress } from "convexpress";
 
-exports.path = "/pets";
-exports.method = "get";
-exports.description = "List pets";
-exports.tags = ["pets"];
-exports.responses = {
-  "200": {
-    description: "pets list"
+export default Convexpress.convroute({
+  method: "get",
+  path: "/pets",
+  operationObject: {
+    description: "List pets",
+    tags: ["pets"],
+    responses: {
+      "200": {
+        description: "pets list"
+      }
+    }
+  },
+  handler(_req, res) {
+    res.status(200).send(["dog", "cat"]);
   }
-};
-exports.parameters = [
-  {
-    name: "status",
-    description: "Filter by pet status (e.g. available / not available)",
-    in: "query",
-    required: false,
-    type: "string"
-  }
-];
-exports.handler = async (req, res) => {
-  const pets = await dbClient.query(`SELECT * FROM pets WHERE status = $1`, [
-    req.query.status
-  ]);
-  res.status(200).send(pets);
-};
+});
 ```
 
-### Register the route and serve it
+### Init convexpress
 
 ```js
-/* File: src/server.js */
-const express = require("express");
-const convexpress = require("convexpress");
+// src/server.ts
+import express from "express";
+import { Convexpress } from "convexpress";
 
-const options = {
+import getPets from "./api/pets/get";
+
+const convexpress = new Convexpress({
+  openapi: "3.0.2",
   info: {
     title: "pet store",
     version: "1.0.0"
-  },
-  host: "localhost:3000"
-};
-const api = convexpress(options)
-  // Serve the API's swagger definition at /swagger.json
-  .serveSwagger()
-  // Register the route (assuming NODE_PATH=src)
-  .convroute(require("api/pets/get"))
+  }
+})
+  // Register the route
+  .addConvroute(getPets)
   // Or register multiple routes at once
-  .loadFrom(`${__dirname}/api/**/*.js`);
+  .loadConvroutesFrom("./api/**/*.(ts|js)");
 
-const server = express()
-  .use(api)
+express()
+  .use(convexpress.generateRouter())
   .listen(process.env.PORT);
 ```
-
-## API
-
-### convexpress(options)
-
-Create an express router object (convrouter), which the additional methods
-`convroute`, `serveSwagger`, and `loadFrom`.
-
-##### Arguments
-
-- `options` **object**: top-level properties of the swagger definition
-  - `host` **string**
-  - `basePath` **string**
-  - `info` **string**
-  - `bodyParserOptions` **object**: options for the json body parser:
-    - `limit` **string** (default `100kb`): maximum body size
-      ([details](https://github.com/expressjs/body-parser#limit))
-    - `strict` **boolean** (default `true`): strictly parse the json body
-      ([details](https://github.com/expressjs/body-parser#strict))
-    - `verify` **function**: a function that verifies the body
-      ([details](https://github.com/expressjs/body-parser#verify))
-
-##### Returns
-
-The express router (convrouter).
-
-### convrouter.convroute(convroute)
-
-Registers a convroute.
-
-##### Arguments
-
-- `convroute` **object** _required_: a convroute definition object:
-  - `path` **string** _required_
-  - `method` **string** _required_
-  - `handler` **function** \_required\_\_
-  - `paramters` **Array< object >**
-  - `middleware` **Array< function >**
-  - `description` **string**
-  - `tags` **Array< string >**
-  - `responses` **Map< object >**
-
-##### Returns
-
-The convrouter, to allow for method chaining.
-
-### convrouter.serveSwagger()
-
-Registers the route `GET /swagger.json` for serving the swagger definition, and
-the route `GET /swagger/` for serving the swagger UI html.
-
-##### Arguments
-
-None.
-
-##### Returns
-
-The convrouter, to allow for method chaining.
-
-### convrouter.loadFrom(pattern)
-
-Loads and registers convroutes from files matching the specified `pattern`.
-
-##### Arguments
-
-- `pattern` **string** _required_:
-  [glob pattern](https://github.com/isaacs/node-glob) of files to load
-  convroutes from
-
-##### Returns
-
-The convrouter, to allow for method chaining.
 
 ## Contributing
 

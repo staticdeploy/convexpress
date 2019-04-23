@@ -60,7 +60,7 @@ describe("middleware", () => {
         );
     });
 
-    describe("middleware have access to the req.convroute object", () => {
+    describe("middleware have access to the req.convroute and the req.openAPIObject properties", () => {
         it("case: convroute middleware", async () => {
             const middleware = sinon.spy((_req, _res, next) => {
                 next();
@@ -83,6 +83,9 @@ describe("middleware", () => {
             expect(req)
                 .to.have.property("convroute")
                 .that.has.property("method", "get");
+            expect(req)
+                .to.have.property("openAPIObject")
+                .that.has.property("openapi", "3.0.2");
         });
 
         it("case: shared middleware", async () => {
@@ -107,6 +110,9 @@ describe("middleware", () => {
             expect(req)
                 .to.have.property("convroute")
                 .that.has.property("method", "get");
+            expect(req)
+                .to.have.property("openAPIObject")
+                .that.has.property("openapi", "3.0.2");
         });
     });
 });

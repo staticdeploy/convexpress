@@ -1,8 +1,9 @@
 import { ErrorRequestHandler, RequestHandler, Router } from "express";
 import glob from "glob";
 import { OpenAPIObject } from "openapi3-ts";
+import swaggerUi from "swagger-ui-express";
 
-import attachConvroute from "./middleware/attachConvroute";
+import decorateRequest from "./middleware/decorateRequest";
 import {
     BaseOpenAPIObject,
     ConvrequestHandler,
@@ -13,49 +14,38 @@ import * as catchAsyncErrors from "./utils/catchAsyncErrors";
 import convertPath from "./utils/convertPath";
 
 export default class Convexpress {
-    /**
-     * Identity method that just returns the convroute passed to it. Convenience
-     * function for typing as an IConvroute the default export of a file, so you
-     * can write this:
-     *
-     * ```ts
-     * import { Convexpress } from "convexpress";
-     *
-     * export default Convexpress.convroute({
-     *   // ...
-     * });
-     * ```
-     *
-     * instead of this:
-     *
-     * ```ts
-     * import { IConvroute } from "convexpress";
-     *
-     * const convroute: IConvroute = {
-     *     // ...
-     * };
-     * export default convroute;
-     * ```
-     */
-    public static convroute(convroute: IConvroute): IConvroute {
-        return convroute;
-    }
-
     private middleware: ConvrequestHandler[] = [];
     private convroutes: IConvroute[] = [];
     private errorHandlers: ErrorConvrequestHandler[] = [];
     private baseOpenAPIObject: BaseOpenAPIObject;
+    private apiDocsPath: string | null;
 
     constructor(options: {
         /**
-         * Base OpenAPI Object definition, specifying things such as the OpenAPI
-         * version and the title of the API. The definition does NOT contain any
-         * operation definition, since operation definitions are specified by
-         * their corresponding convroutes.
+         * Base [OpenAPI Object](https://git.io/fjOmr) definition, specifying
+         * things such as the OpenAPI version and the title of the API. The
+         * definition does NOT contain any operation definition, since operation
+         * definitions are specified by their corresponding convroutes.
          */
         baseOpenAPIObject: BaseOpenAPIObject;
+        /**
+         * Base path at which to serve the api docs, consisting of:
+         *
+         * - the json of the OpenAPI Object, served at
+         *   `${apiDocsPath}/openapi.json`
+         * - a [swagger-ui](https://git.io/fj3cx) for the OpenAPI Object, served
+         *   at `${apiDocsPath}/`
+         *
+         * Defaults to `/api-docs`. You can disable serving api docs by passing
+         * null
+         */
+        apiDocsPath?: string | null;
     }) {
         this.baseOpenAPIObject = options.baseOpenAPIObject;
+        this.apiDocsPath =
+            options.apiDocsPath === undefined
+                ? "/api-docs"
+                : options.apiDocsPath;
     }
 
     /**
@@ -105,15 +95,27 @@ export default class Convexpress {
     }
 
     /**
-     * Get the OpenAPI object built from the operation definitions provided by
-     * the convroutes, and the base definition provided to the Convexpress
-     * instance on creation.
+     * Get the express router configured to handle all the convroutes added to
+     * the Convexpress instance.
      *
-     * **Note**: if you generate a definition, then add more convroutes to the
-     * Convexpress instance, the generated definition will NOT be updated
-     * accordingly
+     * **Note**: if you generate a router, then add more middleware / error
+     * handlers / convroutes to the Convexpress instance, the generated router
+     * will NOT be updated accordingly
      */
-    public generateOpenAPIObject(): OpenAPIObject {
+    public generateRouter(): Router {
+        const router = Router();
+        const openAPIObject = this.generateOpenAPIObject();
+
+        for (const convroute of this.convroutes) {
+            this.registerConvroute(router, convroute, openAPIObject);
+        }
+
+        this.registerApiDocs(router, openAPIObject);
+
+        return router;
+    }
+
+    private generateOpenAPIObject(): OpenAPIObject {
         const definition: OpenAPIObject = {
             ...this.baseOpenAPIObject,
             paths: {}
@@ -128,50 +130,49 @@ export default class Convexpress {
         return definition;
     }
 
-    /**
-     * Get the express router configured to handle all the convroutes added to
-     * the Convexpress instance.
-     *
-     * **Note**: if you generate a router, then add more middleware / error
-     * handlers / convroutes to the Convexpress instance, the generated router
-     * will NOT be updated accordingly
-     */
-    public generateRouter(): Router {
+    private registerConvroute(
+        router: Router,
+        convroute: IConvroute,
+        openAPIObject: OpenAPIObject
+    ): void {
         // Note: ConvrequestHandler and ErrorConvrequestHandler are compatible
         // with express RequestHandler and ErrorRequestHandler (respectively).
         // TypeScript however doesn't think so, hence the type assertions below
 
-        const router = Router();
+        const { method, path, middleware = [], errorHandlers = [] } = convroute;
 
-        for (const convroute of this.convroutes) {
-            const {
-                method,
-                path,
-                middleware = [],
-                errorHandlers = []
-            } = convroute;
+        router[method](
+            path,
+            // Middleware attaching the convroute and the openAPIObject
+            // properties to the request object
+            decorateRequest(convroute, openAPIObject) as RequestHandler,
+            [
+                // Shared middleware
+                ...this.middleware,
+                // Convroute-specific middleware
+                ...middleware
+            ].map(catchAsyncErrors.handler) as RequestHandler[],
+            // Convroute handler
+            catchAsyncErrors.handler(convroute.handler) as RequestHandler,
+            [
+                // Convroute-specific error handlers
+                ...errorHandlers,
+                // Shared error handlers
+                ...this.errorHandlers
+            ].map(catchAsyncErrors.errorHandler) as ErrorRequestHandler[]
+        );
+    }
 
-            router[method](
-                path,
-                // Middleware attaching the convroute object to the request
-                attachConvroute(convroute) as RequestHandler,
-                [
-                    // Shared middleware
-                    ...this.middleware,
-                    // Convroute-specific middleware
-                    ...middleware
-                ].map(catchAsyncErrors.handler) as RequestHandler[],
-                // Convroute handler
-                catchAsyncErrors.handler(convroute.handler) as RequestHandler,
-                [
-                    // Convroute-specific error handlers
-                    ...errorHandlers,
-                    // Shared error handlers
-                    ...this.errorHandlers
-                ].map(catchAsyncErrors.errorHandler) as ErrorRequestHandler[]
-            );
+    private registerApiDocs(
+        router: Router,
+        openAPIObject: OpenAPIObject
+    ): void {
+        if (this.apiDocsPath) {
+            router.use(this.apiDocsPath, swaggerUi.serve);
+            router.get(this.apiDocsPath, swaggerUi.setup(openAPIObject));
+            router.get(`${this.apiDocsPath}/openapi.json`, (_req, res) => {
+                res.status(200).send(openAPIObject);
+            });
         }
-
-        return router;
     }
 }

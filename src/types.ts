@@ -43,14 +43,14 @@ export type Method =
     | "unsubscribe";
 
 /**
- * Definition object of a convexpress route
+ * Object defining a convexpress route
  */
 export interface IConvroute {
     /** Method to handle */
     method: Method;
     /** Path to handle */
     path: string;
-    /** Definition of the OpenAPI operation */
+    /** OpenAPI [Operation Object](https://git.io/fjOmi) describing the route */
     operationObject: OperationObject;
     /** Route-specific middleware */
     middleware?: ConvrequestHandler[];
@@ -62,16 +62,20 @@ export interface IConvroute {
 
 /**
  * Request object passed to a convroute middleware and handler. It's an express
- * request object with the additional convroute property attached, which
- * describes the convroute that matched the request
+ * `Request` object with some additional properties attached:
+ *
+ * - `convroute`: the convroute that matched the request
+ * - `openAPIObject`: the full [OpenAPI Object](https://git.io/fjOmr) of the
+ *   Convexpress instance
  */
 export interface IConvrequest extends Request {
-    convroute: Pick<IConvroute, "method" | "path" | "operationObject">;
+    convroute: IConvroute;
+    openAPIObject: OpenAPIObject;
 }
 
 /**
- * Specialized express RequestHandler taking an IConvrequest instead of an
- * express Request
+ * Specialized express `RequestHandler` taking an `IConvrequest` instead of an
+ * express `Request`
  */
 export type ConvrequestHandler = (
     req: IConvrequest,
@@ -80,8 +84,8 @@ export type ConvrequestHandler = (
 ) => any;
 
 /**
- * Specialized express ErrorRequestHandler taking an IConvrequest instead of an
- * express Request
+ * Specialized express `ErrorRequestHandler` taking an `IConvrequest` instead of
+ * an express `Request`
  */
 export type ErrorConvrequestHandler = (
     error: any,

@@ -415,7 +415,7 @@ describe("error handling", () => {
         );
     });
 
-    describe("error handlers have access to the req.convroute object", () => {
+    describe("error handlers have access to the req.convroute and req.openAPIObject properties", () => {
         it("case: convroute error handlers", async () => {
             const errorHandler = sinon.spy(baseErrorHandler);
 
@@ -436,6 +436,9 @@ describe("error handling", () => {
             expect(req)
                 .to.have.property("convroute")
                 .that.has.property("method", "get");
+            expect(req)
+                .to.have.property("openAPIObject")
+                .that.has.property("openapi", "3.0.2");
         });
 
         it("case: shared error handlers", async () => {
@@ -458,6 +461,9 @@ describe("error handling", () => {
             expect(req)
                 .to.have.property("convroute")
                 .that.has.property("method", "get");
+            expect(req)
+                .to.have.property("openAPIObject")
+                .that.has.property("openapi", "3.0.2");
         });
     });
 });

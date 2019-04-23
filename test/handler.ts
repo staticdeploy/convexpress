@@ -16,7 +16,7 @@ describe("convroute handlers", () => {
         operationObject: { responses: [] }
     };
 
-    it("have access to the req.convroute object", async () => {
+    it("have access to the req.convroute and req.openAPIObject properties", async () => {
         const handler = sinon.spy((_req, res) => {
             res.status(200).send();
         });
@@ -35,5 +35,8 @@ describe("convroute handlers", () => {
         expect(req)
             .to.have.property("convroute")
             .that.has.property("method", "get");
+        expect(req)
+            .to.have.property("openAPIObject")
+            .that.has.property("openapi", "3.0.2");
     });
 });

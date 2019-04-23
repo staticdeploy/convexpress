@@ -1,7 +1,7 @@
 import { ConvrequestHandler, ErrorConvrequestHandler } from "../types";
 
 /*
- * Convexpress midddleware handlers, route handlers, and error handlers can be
+ * Convexpress middleware handlers, route handlers, and error handlers can be
  * async. Express though doesn't catch any async errors that might be thrown by
  * them. By wrapping those functions with the two functions below we rectify
  * that.

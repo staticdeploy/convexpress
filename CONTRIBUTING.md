@@ -18,7 +18,7 @@ You can then run one of the following scripts:
 - `yarn lint`: runs linters
 - `yarn prettify`: formats the code with [prettier](https://prettier.io)
 - `yarn compile`: compiles the TypeScript code into Javascript
-- `yarn generate-api-docs`: generates API docs with TypeDoc
+- `yarn docs:dev`: starts the development server for the documentation website
 
 ## Conventions
 

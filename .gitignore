@@ -13,5 +13,8 @@ yarn-error.log*
 /coverage
 /.nyc_output
 
-# TypeDoc generated docs
-/docs
+# TypeDoc build dir
+/docs/.vuepress/public/api-docs
+
+# Vuepress build dir
+/docs/.vuepress/dist

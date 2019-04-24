@@ -1,5 +1,6 @@
 version: 2
 jobs:
+
   qa:
     docker:
       - image: circleci/node
@@ -13,13 +14,40 @@ jobs:
           command: yarn lint
       - run:
           name: Compile the code
-          command: yarn lint
+          command: yarn compile
       - run:
           name: Run tests and calculate code coverage
           command: yarn coverage
       - run:
           name: Publish code coverage report
           command: yarn publish-coverage
+
+  publish-website:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: yarn install --frozen-lockfile
+      - run:
+          name: Compile website
+          command: yarn docs:build
+      - run:
+          name: Install staticdeploy cli
+          command: |
+            yarn global add @staticdeploy/cli
+            echo 'export PATH=$PATH:$(yarn global bin)' >> $BASH_ENV
+      - run:
+          name: Create website bundle
+          command: staticdeploy bundle
+      - run:
+          name: Deploy website version
+          command: staticdeploy deploy
+      - run:
+          name: Deploy main website
+          command: DEPLOY_MAIN_WEBSITE=true staticdeploy deploy
+
   npm-publish:
     docker:
       - image: circleci/node
@@ -43,6 +71,11 @@ workflows:
   qa-npm:
     jobs:
       - qa:
+          # Run for all branches and all tags
+          filters:
+            tags:
+              only: /.*/
+      - publish-website:
           # Run for all branches and all tags
           filters:
             tags:

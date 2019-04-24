@@ -76,6 +76,8 @@ workflows:
             tags:
               only: /.*/
       - publish-website:
+          requires:
+            - qa
           # Run for all branches and all tags
           filters:
             tags:

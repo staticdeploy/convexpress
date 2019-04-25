@@ -6,11 +6,11 @@ const BUNDLE_TAG = process.env.CIRCLE_TAG || process.env.CIRCLE_BRANCH;
 
 module.exports = {
     bundle: {
-        from: join(__dirname, "/docs/.vuepress/dist"),
+        from: join(__dirname, "/website/build/convexpress"),
         name: "convexpress",
         tag: BUNDLE_TAG,
         description: `Bundle for commit ${process.env.CIRCLE_SHA1}`,
-        fallbackAssetPath: "/404.html",
+        fallbackAssetPath: "/notFound.html",
         fallbackStatusCode: 404,
         headers: {
             "**/*": {

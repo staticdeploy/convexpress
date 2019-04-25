@@ -6,6 +6,6 @@ module.exports = {
     readme: "none",
     hideGenerator: true,
     excludeExternals: true,
-    name: "index",
-    out: "docs/.vuepress/public/api-docs"
+    name: "Index",
+    out: "website/build/convexpress/api-docs"
 };

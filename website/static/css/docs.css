@@ -1,0 +1,11 @@
+/* Decrease page title size and distantiate it a bit from the text underneath */
+.postHeader h1 {
+    font-size: 230% !important;
+}
+
+/* Make blockquotes yellow (instead of red) and text inside them black */
+blockquote {
+    color: var(--black);
+    background-color: #fecb4d32;
+    border-left-color: #fecb4d64;
+}

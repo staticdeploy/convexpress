@@ -27,9 +27,9 @@
     "coverage": "nyc --all npm test",
     "publish-coverage": "codecov",
     "docs:build:typedoc": "typedoc ./src/",
-    "docs:build:vuepress": "vuepress build docs",
-    "docs:build": "yarn docs:build:typedoc && yarn docs:build:vuepress",
-    "docs:dev": "yarn docs:build:typedoc && vuepress dev docs"
+    "docs:build:docusaurus": "cd website && BUILD_FOR_PRODUCTION=true docusaurus-build && node ../scripts/fixBuild.js",
+    "docs:build": "yarn docs:build:docusaurus && yarn docs:build:typedoc",
+    "docs:dev": "cd website && docusaurus-start"
   },
   "dependencies": {
     "express": "^4.16.4",
@@ -50,9 +50,12 @@
     "@types/supertest": "^2.0.7",
     "@types/swagger-ui-express": "^3.0.0",
     "chai": "^4.2.0",
+    "cheerio": "^1.0.0-rc.3",
     "codecov": "^3.3.0",
     "create-fs-tree": "^1.0.0",
     "decache": "^4.5.1",
+    "docusaurus": "^1.8.3",
+    "fs-extra": "^7.0.1",
     "husky": "^2.0.0",
     "mocha": "^6.1.4",
     "nyc": "^14.0.0",
@@ -66,6 +69,6 @@
     "tslint-config-prettier": "^1.18.0",
     "typedoc": "^0.14.2",
     "typescript": "^3.4.5",
-    "vuepress": "^1.0.0-alpha.47"
+    "url-join": "^4.0.0"
   }
 }

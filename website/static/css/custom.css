@@ -1,0 +1,20 @@
+/* Define global colors */
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #33639d;
+    --black: #24292e;
+    --white: #ffffff;
+}
+
+/* Make titles' font thin and color them of the primary color */
+h1,
+h2,
+h3,
+h4 {
+    font-weight: 300;
+    color: var(--primary-color);
+}
+/* Except for the title in the top bar */
+.headerTitle {
+    color: var(--white);
+}

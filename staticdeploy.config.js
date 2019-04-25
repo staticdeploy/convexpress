@@ -1,8 +1,11 @@
 const { join } = require("path");
 
-const IS_DEPLOYING_MAIN_WEBSITE = process.env.DEPLOY_MAIN_WEBSITE === "true";
+const IS_DEPLOYING_LATEST_WEBSITE =
+    process.env.DEPLOY_LATEST_WEBSITE === "true";
 const IS_GIT_TAG = !!process.env.CIRCLE_TAG;
-const BUNDLE_TAG = IS_GIT_TAG
+const BUNDLE_TAG = IS_DEPLOYING_LATEST_WEBSITE
+    ? "latest"
+    : IS_GIT_TAG
     ? process.env.CIRCLE_TAG
     : process.env.CIRCLE_BRANCH;
 
@@ -22,11 +25,10 @@ module.exports = {
     },
     deploy: {
         app: "convexpress",
-        entrypoint: IS_GIT_TAG
-            ? IS_DEPLOYING_MAIN_WEBSITE
+        entrypoint:
+            IS_GIT_TAG && IS_DEPLOYING_LATEST_WEBSITE
                 ? "convexpress.staticdeploy.io/"
-                : `convexpress.staticdeploy.io/${BUNDLE_TAG}/`
-            : `convexpress.staticdeploy.io/_/${BUNDLE_TAG}/`,
+                : `convexpress.staticdeploy.io/_/${BUNDLE_TAG}/`,
         bundle: `convexpress:${BUNDLE_TAG}`
     }
 };

@@ -1,7 +1,7 @@
 module.exports = {
     title: "convexpress",
     description: "Employ conventions to register express routes",
-    base: "./",
+    base: process.env.WEBSITE_BASE || "/",
     themeConfig: {
         nav: [
             { text: "Home", link: "/" },

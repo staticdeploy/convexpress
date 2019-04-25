@@ -22,7 +22,7 @@ jobs:
           name: Publish code coverage report
           command: yarn publish-coverage
 
-  publish-website:
+  publish-version-website:
     docker:
       - image: circleci/node
     steps:
@@ -31,22 +31,42 @@ jobs:
           name: Install dependencies
           command: yarn install --frozen-lockfile
       - run:
-          name: Compile website
-          command: yarn docs:build
+          name: Install staticdeploy cli
+          command: |
+            yarn global add @staticdeploy/cli
+            echo 'export PATH=$PATH:$(yarn global bin)' >> $BASH_ENV
+      - run:
+          name: Compile version website
+          command: WEBSITE_BASE=/_/${CIRCLE_TAG:-$CIRCLE_BRANCH}/ yarn docs:build
+      - run:
+          name: Create version website bundle
+          command: staticdeploy bundle
+      - run:
+          name: Deploy version website
+          command: staticdeploy deploy
+
+  publish-latest-website:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: yarn install --frozen-lockfile
       - run:
           name: Install staticdeploy cli
           command: |
             yarn global add @staticdeploy/cli
             echo 'export PATH=$PATH:$(yarn global bin)' >> $BASH_ENV
       - run:
-          name: Create website bundle
-          command: staticdeploy bundle
+          name: Compile latest website
+          command: WEBSITE_BASE=/ yarn docs:build
       - run:
-          name: Deploy website version
-          command: staticdeploy deploy
+          name: Create latest website bundle
+          command: DEPLOY_LATEST_WEBSITE=true staticdeploy bundle
       - run:
-          name: Deploy main website
-          command: DEPLOY_MAIN_WEBSITE=true staticdeploy deploy
+          name: Deploy latest website
+          command: DEPLOY_LATEST_WEBSITE=true staticdeploy deploy
 
   npm-publish:
     docker:
@@ -75,13 +95,22 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - publish-website:
+      - publish-version-website:
           requires:
             - qa
           # Run for all branches and all tags
           filters:
             tags:
               only: /.*/
+      - publish-latest-website:
+          requires:
+            - qa
+          # Run only for tags starting with a v, don't run for branches
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
       - npm-publish:
           requires:
             - qa

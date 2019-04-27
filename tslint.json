@@ -1,0 +1,10 @@
+{
+    "extends": ["tslint:latest", "tslint-config-prettier"],
+    "rules": {
+        "array-type": false,
+        "no-implicit-dependencies": false,
+        "object-literal-shorthand": false,
+        "object-literal-sort-keys": false,
+        "variable-name": false
+    }
+}

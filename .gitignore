@@ -1,8 +1,18 @@
 # Npm + yarn files
-node_modules/
-npm-debug.log
-yarn-error.log
+/node_modules
+npm-debug.log*
+npm-error.log*
+package-lock.json
+yarn-debug.log*
+yarn-error.log*
+
+# Typescript compiler output directory
+/lib
 
 # Nyc (test coverage) files
-coverage/
-.nyc_output/
+/coverage
+/.nyc_output
+
+# Docusaurus directories
+/website/i18n
+/website/build

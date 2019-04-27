@@ -1,0 +1,13 @@
+/* Position the iframe inside the page */
+.api-frame {
+    border: 0px;
+    width: 100%;
+    max-width: 1400px;
+    margin: auto;
+    height: calc(100vh - 50px);
+}
+@media only screen and (max-width: 1024px) {
+    .api-frame {
+        height: calc(100vh - 100px);
+    }
+}

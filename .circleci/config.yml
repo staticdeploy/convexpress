@@ -1,5 +1,6 @@
 version: 2
 jobs:
+
   qa:
     docker:
       - image: circleci/node
@@ -12,11 +13,45 @@ jobs:
           name: Run linters
           command: yarn lint
       - run:
+          name: Compile the code
+          command: yarn compile
+      - run:
           name: Run tests and calculate code coverage
           command: yarn coverage
       - run:
           name: Publish code coverage report
           command: yarn publish-coverage
+
+  publish-website:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: yarn install --frozen-lockfile
+      - run:
+          name: Install staticdeploy cli
+          command: |
+            yarn global add @staticdeploy/cli
+            echo 'export PATH=$PATH:$(yarn global bin)' >> $BASH_ENV
+      - run:
+          name: Compile website
+          command: yarn docs:build
+      - run:
+          name: Create website bundle
+          command: staticdeploy bundle
+      - run:
+          name: Deploy version website
+          command: staticdeploy deploy
+      - run:
+          name: Deploy latest website
+          # Only run for tags
+          command: |
+            if ! [ -z $CIRCLE_TAG ]; then \
+              DEPLOY_LATEST_WEBSITE=true staticdeploy deploy \
+            ; fi
+
   npm-publish:
     docker:
       - image: circleci/node
@@ -25,6 +60,9 @@ jobs:
       - run:
           name: Install dependencies
           command: yarn install --frozen-lockfile
+      - run:
+          name: Compile the code
+          command: yarn lint
       - run:
           name: Login to npm
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
@@ -37,6 +75,13 @@ workflows:
   qa-npm:
     jobs:
       - qa:
+          # Run for all branches and all tags
+          filters:
+            tags:
+              only: /.*/
+      - publish-website:
+          requires:
+            - qa
           # Run for all branches and all tags
           filters:
             tags:

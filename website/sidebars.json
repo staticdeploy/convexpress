@@ -1,0 +1,11 @@
+{
+  "docs": {
+      "Getting started": [
+          "getting-started-overview",
+          "getting-started-quickstart"
+      ],
+      "Guides": [
+          "guides-error-handling"
+      ]
+  }
+}

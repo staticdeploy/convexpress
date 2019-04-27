@@ -16,7 +16,7 @@ const Button = props => (
 );
 
 const HomeSplash = () => (
-    <div className="homeContainer">
+    <div className="homeContainer homePage">
         <div className="homeSplashFade">
             <div className="wrapper homeWrapper">
                 <div className="inner">

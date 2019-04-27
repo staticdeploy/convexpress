@@ -18,21 +18,21 @@
  * Increase home "hero" height, color it with primary-color and make its text
  * white
  */
-.homeContainer {
+.homeContainer.homePage {
     height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--primary-color);
 }
-.homeContainer .projectTitle {
+.homeContainer.homePage .projectTitle {
     color: var(--white);
 }
-.homeContainer .button {
+.homeContainer.homePage .button {
     border-color: var(--white);
     color: var(--white);
 }
-.homeContainer .button:hover {
+.homeContainer.homePage .button:hover {
     background: var(--white);
     color: var(--primary-color);
 }

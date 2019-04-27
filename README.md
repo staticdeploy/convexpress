@@ -6,7 +6,7 @@
 
 # convexpress
 
-Employ conventions to register express routes.
+An opinionated way to build express.js APIs.
 
 ## Install
 

@@ -29,7 +29,7 @@ const HomeSplash = () => (
                             <div className="pluginRowBlock">
                                 <Button
                                     href={withBaseUrl(
-                                        "/docs/getting-started-quickstart"
+                                        "/docs/getting-started-overview"
                                     )}
                                 >
                                     {"get started"}
@@ -69,19 +69,9 @@ const MainFeaturesRow = () => (
                         Bind your routes' behaviour to their OpenAPI definition,
                         so that it's always up-to-date and accurate
                     `)
-                },
-                {
-                    image: withBaseUrl("/images/home.async.svg"),
-                    imageAlign: "top",
-                    title: "Async",
-                    content: stripIndent(`
-                        Write your handlers, middleware, and error handlers as
-                        async functions, not worrying about unhandled rejected
-                        promises
-                    `)
                 }
             ]}
-            layout="threeColumn"
+            layout="twoColumn"
         />
     </Container>
 );

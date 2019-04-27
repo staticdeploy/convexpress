@@ -1,7 +1,7 @@
 {
   "name": "convexpress",
   "version": "2.3.0",
-  "description": "Employ conventions to register express routes",
+  "description": "An opinionated way to build express.js APIs",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "files": [

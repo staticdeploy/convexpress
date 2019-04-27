@@ -1,6 +1,6 @@
 module.exports = {
     title: "convexpress",
-    tagline: "Employ conventions to register express routes",
+    tagline: "An opinionated way to build express.js APIs",
     url: "https://convexpress.staticdeploy.io",
     // When building for production, use relative urls, which will be correctly
     // handled by StaticDeploy. Use the BUILD_FOR_PRODUCTION instead of the
@@ -34,7 +34,8 @@ module.exports = {
         secondaryColor: "#33639d"
     },
     copyright: `Copyright © ${new Date().getFullYear()} Paolo Scanferla`,
+    usePrism: ["js"],
     highlight: {
-        theme: "default"
+        theme: "atom-one-dark"
     }
 };

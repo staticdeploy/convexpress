@@ -5,7 +5,7 @@ const request = require("supertest");
 const { middleware } = require("../../src/validate-middleware");
 const parseBody = require("../../src/parse-body");
 
-describe("validate.middleware", () => {
+describe("validate middleware", () => {
     describe("optional parameters", () => {
         const params = [
             {

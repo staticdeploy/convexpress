@@ -1,5 +1,5 @@
 [![npm](https://badge.fury.io/js/convexpress.svg)](https://badge.fury.io/js/convexpress)
-[![build](https://travis-ci.org/staticdeploy/convexpress.svg?branch=master)](https://travis-ci.org/staticdeploy/convexpress)
+[![build status](https://img.shields.io/circleci/project/github/staticdeploy/convexpress.svg)](https://circleci.com/gh/staticdeploy/convexpress)
 [![coverage](https://codecov.io/github/staticdeploy/convexpress/coverage.svg?branch=master)](https://codecov.io/github/staticdeploy/convexpress?branch=master)
 [![dependencies](https://david-dm.org/staticdeploy/convexpress.svg)](https://david-dm.org/staticdeploy/convexpress)
 [![devDependencies](https://david-dm.org/staticdeploy/convexpress/dev-status.svg)](https://david-dm.org/staticdeploy/convexpress#info=devDependencies)
@@ -9,9 +9,9 @@
 Employ conventions to register express routes. This is done by creating route
 definition objects - convroutes - which:
 
-* register the route's method and path
-* handle input validation
-* document the route
+- register the route's method and path
+- handle input validation
+- document the route
 
 ## Install
 
@@ -35,24 +35,25 @@ exports.method = "get";
 exports.description = "List pets";
 exports.tags = ["pets"];
 exports.responses = {
-    "200": {
-        description: "pets list"
-    }
+  "200": {
+    description: "pets list"
+  }
 };
-exports.parameters = [{
+exports.parameters = [
+  {
     name: "status",
     description: "Filter by pet status (e.g. available / not available)",
     in: "query",
     required: false,
-    type: "string",
-}];
+    type: "string"
+  }
+];
 exports.handler = async (req, res) => {
-    const pets = await dbClient.query(
-        `SELECT * FROM pets WHERE status = $1`,
-        [req.query.status]
-    );
-    res.status(200).send(pets);
-}
+  const pets = await dbClient.query(`SELECT * FROM pets WHERE status = $1`, [
+    req.query.status
+  ]);
+  res.status(200).send(pets);
+};
 ```
 
 ### Register the route and serve it
@@ -63,23 +64,23 @@ const express = require("express");
 const convexpress = require("convexpress");
 
 const options = {
-    info: {
-        title: "pet store",
-        version: "1.0.0"
-    },
-    host: "localhost:3000"
+  info: {
+    title: "pet store",
+    version: "1.0.0"
+  },
+  host: "localhost:3000"
 };
 const api = convexpress(options)
-    // Serve the API's swagger definition at /swagger.json
-    .serveSwagger()
-    // Register the route (assuming NODE_PATH=src)
-    .convroute(require("api/pets/get"))
-    // Or register multiple routes at once
-    .loadFrom(`${__dirname}/api/**/*.js`);
+  // Serve the API's swagger definition at /swagger.json
+  .serveSwagger()
+  // Register the route (assuming NODE_PATH=src)
+  .convroute(require("api/pets/get"))
+  // Or register multiple routes at once
+  .loadFrom(`${__dirname}/api/**/*.js`);
 
 const server = express()
-    .use(api)
-    .listen(process.env.PORT);
+  .use(api)
+  .listen(process.env.PORT);
 ```
 
 ## API
@@ -91,16 +92,16 @@ Create an express router object (convrouter), which the additional methods
 
 ##### Arguments
 
-* `options` **object**: top-level properties of the swagger definition
-  * `host` **string**
-  * `basePath` **string**
-  * `info` **string**
-  * `bodyParserOptions` **object**: options for the json body parser:
-    * `limit` **string** (default `100kb`): maximum body size
+- `options` **object**: top-level properties of the swagger definition
+  - `host` **string**
+  - `basePath` **string**
+  - `info` **string**
+  - `bodyParserOptions` **object**: options for the json body parser:
+    - `limit` **string** (default `100kb`): maximum body size
       ([details](https://github.com/expressjs/body-parser#limit))
-    * `strict` **boolean** (default `true`): strictly parse the json body
+    - `strict` **boolean** (default `true`): strictly parse the json body
       ([details](https://github.com/expressjs/body-parser#strict))
-    * `verify` **function**: a function that verifies the body
+    - `verify` **function**: a function that verifies the body
       ([details](https://github.com/expressjs/body-parser#verify))
 
 ##### Returns
@@ -113,15 +114,15 @@ Registers a convroute.
 
 ##### Arguments
 
-* `convroute` **object** _required_: a convroute definition object:
-  * `path` **string** _required_
-  * `method` **string** _required_
-  * `handler` **function** _required__
-  * `paramters` **Array< object >**
-  * `middleware` **Array< function >**
-  * `description` **string**
-  * `tags` **Array< string >**
-  * `responses` **Map< object >**
+- `convroute` **object** _required_: a convroute definition object:
+  - `path` **string** _required_
+  - `method` **string** _required_
+  - `handler` **function** \_required\_\_
+  - `paramters` **Array< object >**
+  - `middleware` **Array< function >**
+  - `description` **string**
+  - `tags` **Array< string >**
+  - `responses` **Map< object >**
 
 ##### Returns
 
@@ -146,7 +147,7 @@ Loads and registers convroutes from files matching the specified `pattern`.
 
 ##### Arguments
 
-* `pattern` **string** _required_:
+- `pattern` **string** _required_:
   [glob pattern](https://github.com/isaacs/node-glob) of files to load
   convroutes from
 

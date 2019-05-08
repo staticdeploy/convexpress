@@ -37,6 +37,7 @@ module.exports = function convexpress(options) {
                 description: route.description,
                 tags: route.tags || [],
                 parameters: convert.parameters(route.parameters),
+                operationId: route.operationId,
                 responses: {
                     ...route.responses,
                     ...validate.responses

@@ -86,6 +86,7 @@ describe("convroute method", () => {
                         }
                     }
                 ],
+                operationId: "operation id",
                 responses: {
                     "200": { description: "ok" }
                 }
@@ -96,6 +97,7 @@ describe("convroute method", () => {
                 handler: handler,
                 description: "path two",
                 parameters: [{ name: "param" }],
+                operationId: "operation id",
                 responses: {
                     "200": { description: "ok" }
                 }
@@ -113,6 +115,7 @@ describe("convroute method", () => {
             paths: {
                 "/path/{one}": {
                     post: {
+                        operationId: "operation id",
                         description: "path one",
                         tags: ["tag"],
                         parameters: [
@@ -134,6 +137,7 @@ describe("convroute method", () => {
                 },
                 "/path/{two}": {
                     put: {
+                        operationId: "operation id",
                         description: "path two",
                         tags: [],
                         parameters: [{ name: "param", type: "string" }],

@@ -95,7 +95,9 @@ Create an express router object (convrouter), which the additional methods
 - `options` **object**: top-level properties of the swagger definition
   - `host` **string**
   - `basePath` **string**
-  - `info` **string**
+  - `info` **object**:
+    - `title` **string**: title of the api docs
+    - `version` **string**: version of the api
   - `bodyParserOptions` **object**: options for the json body parser:
     - `limit` **string** (default `100kb`): maximum body size
       ([details](https://github.com/expressjs/body-parser#limit))
